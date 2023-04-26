@@ -1,0 +1,9 @@
+{
+  "verbose": false,
+  "transform": {"\\.js$": "babel-jest"},
+  "testEnvironment": "@happy-dom/jest-environment",
+  "testEnvironmentOptions": {
+    "url": "http://localhost:4000/"
+  },
+  "coverageReporters": ["html"]
+}

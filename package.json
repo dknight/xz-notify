@@ -1,0 +1,37 @@
+{
+  "name": "xz-notify",
+  "version": "0.0.0",
+  "description": "Notifications based on web components.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx jest --env=@happy-dom/jest-environment",
+    "test:coverage": "npx jest --env=@happy-dom/jest-environment --collect-coverage",
+    "lint": "npx eslint {src/,__tests__}/**/*.js",
+    "build": "npm run lint && npm run test:coverage && ./build.sh"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dknight/xz-notify.git"
+  },
+  "keywords": [
+    "notification",
+    "webcomponents",
+    "agnostic"
+  ],
+  "author": "Dmitri Smirnov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dknight/xz-notify/issues"
+  },
+  "homepage": "https://github.com/dknight/xz-notify#readme",
+  "devDependencies": {
+    "@babel/preset-env": "^7.21.4",
+    "@happy-dom/jest-environment": "^9.9.2",
+    "babel-jest": "^29.5.0",
+    "esbuild": "^0.17.18",
+    "eslint": "^8.39.0",
+    "eslint-config-google": "^0.14.0",
+    "jest": "^29.5.0"
+  }
+}
