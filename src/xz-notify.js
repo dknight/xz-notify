@@ -12,7 +12,7 @@
  * notification will close the notification.
  * @property {string} [position="ne"] Position of the notification. See
  * `XZNotify.position` for possible values.
- * @property {string} [title] Title of the notification. Creates h3 element
+ * @property {string} [heading] Heading of the notification. Creates h3 element
  * inside the notification.
  *
  * @fires XZNotify#open
@@ -140,7 +140,7 @@ class XZNotify extends HTMLElement {
    */
   constructor() {
     super();
-    this.root = this.attachShadow({mode: 'closed'});
+    this.root = this.attachShadow({mode: 'open'});
     this.css = this.#css;
   }
 
@@ -242,7 +242,7 @@ class XZNotify extends HTMLElement {
     this.expire = Number(this.getAttribute('expire'))
         || this.constructor.defaults.EXPIRE;
     this.closeable = this.hasAttribute('closeable');
-    this.title = this.getAttribute('title');
+    this.heading = this.getAttribute('heading');
   }
 
   /**
@@ -250,20 +250,20 @@ class XZNotify extends HTMLElement {
    * @private
    */
   #render() {
-    this.root.appendChild(this.#styleElem);
-    this.title && this.root.appendChild(this.#buildTitle());
+    this.root.append(this.#styleElem);
+    this.heading && this.root.appendChild(this.#buildHeading());
     // TODO try to think out better solution, maybe slots?
-    this.root.append(...this.childNodes);
+    this.root.append(...this.children);
   }
 
   /**
-   * Builds title heading element.
+   * Builds heading <h3> element.
    * @return {HTMLHeadingElement}
    */
-  #buildTitle() {
-    const title = document.createElement('h3');
-    title.innerText = this.title;
-    return title;
+  #buildHeading() {
+    const h = document.createElement('h3');
+    h.innerText = this.heading;
+    return h;
   }
 
   /**

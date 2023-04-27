@@ -34,7 +34,7 @@ module.exports = __toCommonJS(xz_notify_exports);
  * notification will close the notification.
  * @property {string} [position="ne"] Position of the notification. See
  * `XZNotify.position` for possible values.
- * @property {string} [title] Title of the notification. Creates h3 element
+ * @property {string} [heading] Heading of the notification. Creates h3 element
  * inside the notification.
  *
  * @fires XZNotify#open
@@ -144,7 +144,7 @@ class XZNotify extends HTMLElement {
   #styleElem = document.createElement("style");
   #forcedClose = false;
   // injected in build stage;
-  #css = `:host{--xz-notify-background-color: #f7f7f7;--xz-notify-title-color: currentColor;display:block;position:fixed;left:var(--xz-notify-left);top:var(--xz-notify-top);border-radius:0;border-width:0;border-style:solid;font-family:system-ui,-apple-system,Arial,sans-serif;font-size:16px;font-weight:400;line-height:normal;margin:.5em;padding:1.5em;width:fit-content;max-width:28em;min-width:18em;height:auto;z-index:auto;animation:xz-notify-close .4s ease-in 1;animation-play-state:paused;background:var(--xz-notify-background-color) linear-gradient(to right,var(--xz-notify-title-color) .25em,transparent 0);border-color:transparent;color:#666}@keyframes xz-notify-close{to{opacity:0}}:host([closeable]){cursor:pointer}:host([closeable]:hover):after{content:"";display:block;width:100%;height:100%;background:rgba(0,0,0,.05);position:absolute;top:0;left:0;pointer-events:none}:host p{margin-top:0}:host a{color:currentColor}:host h3{color:var(--xz-notify-title-color, currentColor);font-size:125%;margin:0 0 .5em}:host([type="info"]){--xz-notify-title-color: #4d4dff;--xz-notify-background-color: #f6f6ff}:host([type="success"]){--xz-notify-title-color: #2ec946;--xz-notify-background-color: #f4fcf6}:host([type="warning"]){--xz-notify-title-color: #ffba00;--xz-notify-background-color: #fffbf2}:host([type="error"]){--xz-notify-title-color: #ff3838;--xz-notify-background-color: #fff5f5}`;
+  #css = `:host{--xz-notify-background-color: #f7f7f7;--xz-notify-heading-color: currentColor;display:block;position:fixed;left:var(--xz-notify-left);top:var(--xz-notify-top);border-radius:0;border-width:0;border-style:solid;font-family:system-ui,-apple-system,Arial,sans-serif;font-size:16px;font-weight:400;line-height:normal;margin:.5em;padding:1.5em;width:fit-content;max-width:28em;min-width:18em;height:auto;z-index:auto;animation:xz-notify-close .4s ease-in 1;animation-play-state:paused;background:var(--xz-notify-background-color) linear-gradient(to right,var(--xz-notify-heading-color) .25em,transparent 0);border-color:transparent;color:#666}@keyframes xz-notify-close{to{opacity:0}}:host([closeable]){cursor:pointer}:host([closeable]:hover):after{content:"";display:block;width:100%;height:100%;background:rgba(0,0,0,.05);position:absolute;top:0;left:0;pointer-events:none}:host p{margin-top:0}:host a{color:currentColor}:host h3{color:var(--xz-notify-heading-color, currentColor);font-size:125%;margin:0 0 .5em}:host([type="info"]){--xz-notify-heading-color: #4d4dff;--xz-notify-background-color: #f6f6ff}:host([type="success"]){--xz-notify-heading-color: #2ec946;--xz-notify-background-color: #f4fcf6}:host([type="warning"]){--xz-notify-heading-color: #ffba00;--xz-notify-background-color: #fffbf2}:host([type="error"]){--xz-notify-heading-color: #ff3838;--xz-notify-background-color: #fff5f5}`;
   /**
    * Constructor is always called before instance of notification is connected
    * to DOM.
@@ -152,7 +152,7 @@ class XZNotify extends HTMLElement {
    */
   constructor() {
     super();
-    this.root = this.attachShadow({ mode: "closed" });
+    this.root = this.attachShadow({ mode: "open" });
     this.css = this.#css;
   }
   /**
@@ -245,25 +245,25 @@ class XZNotify extends HTMLElement {
     this.position = (this.getAttribute("position") || this.constructor.position.NE).toLowerCase();
     this.expire = Number(this.getAttribute("expire")) || this.constructor.defaults.EXPIRE;
     this.closeable = this.hasAttribute("closeable");
-    this.title = this.getAttribute("title");
+    this.heading = this.getAttribute("heading");
   }
   /**
    * Renders element.
    * @private
    */
   #render() {
-    this.root.appendChild(this.#styleElem);
-    this.title && this.root.appendChild(this.#buildTitle());
-    this.root.append(...this.childNodes);
+    this.root.append(this.#styleElem);
+    this.heading && this.root.appendChild(this.#buildHeading());
+    this.root.append(...this.children);
   }
   /**
-   * Builds title heading element.
+   * Builds heading <h3> element.
    * @return {HTMLHeadingElement}
    */
-  #buildTitle() {
-    const title = document.createElement("h3");
-    title.innerText = this.title;
-    return title;
+  #buildHeading() {
+    const h = document.createElement("h3");
+    h.innerText = this.heading;
+    return h;
   }
   /**
    * Added all interactivity here for potential SSR.

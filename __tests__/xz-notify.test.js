@@ -19,11 +19,11 @@ describe('Should test', () => {
     expect(component.parentElement).toBe(document.body);
   });
 
-  it('should render notification with title', () => {
-    component = XZNotify.create('Hello world', {title: 'Xyzzy'});
+  it('should render notification with heading', () => {
+    component = XZNotify.create('Hello world', {heading: 'Xyzzy'});
     document.body.appendChild(component);
-    expect(component.title).toBe('Xyzzy');
-    expect(component.getAttribute('title')).toBe('Xyzzy');
+    expect(component.heading).toBe('Xyzzy');
+    expect(component.getAttribute('heading')).toBe('Xyzzy');
   });
 
   it('should render notification with trusted content', () => {

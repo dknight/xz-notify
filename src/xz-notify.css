@@ -1,6 +1,6 @@
 :host {
   --xz-notify-background-color: #f7f7f7;
-  --xz-notify-title-color: currentColor;
+  --xz-notify-heading-color: currentColor;
 
   display: block;
   position: fixed;
@@ -24,7 +24,7 @@
   animation-play-state: paused; /* required for close */
   background:
     var(--xz-notify-background-color)
-    linear-gradient(to right, var(--xz-notify-title-color) .25em, transparent 0);
+    linear-gradient(to right, var(--xz-notify-heading-color) .25em, transparent 0);
   border-color: transparent;
   color: #666;
 }
@@ -50,25 +50,25 @@
 :host p {margin-top: 0}
 :host a {color: currentColor}
 :host h3 {
-  color: var(--xz-notify-title-color, currentColor);
+  color: var(--xz-notify-heading-color, currentColor);
   font-size: 125%;
   margin: 0 0 .5em;
 }
 
 /* Default theme */
 :host([type="info"]) {
-  --xz-notify-title-color: #4d4dff;
+  --xz-notify-heading-color: #4d4dff;
   --xz-notify-background-color: #f6f6ff;
 }
 :host([type="success"]) {
-  --xz-notify-title-color: #2ec946;
+  --xz-notify-heading-color: #2ec946;
   --xz-notify-background-color: #f4fcf6;
 }
 :host([type="warning"]) {
-  --xz-notify-title-color: #ffba00;
+  --xz-notify-heading-color: #ffba00;
   --xz-notify-background-color: #fffbf2;
 }
 :host([type="error"]) {
-  --xz-notify-title-color: #ff3838;
+  --xz-notify-heading-color: #ff3838;
   --xz-notify-background-color: #fff5f5;
 }
