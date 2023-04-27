@@ -172,51 +172,67 @@ class XZNotify extends HTMLElement {
    * Calculates and sets the position of the notification.
    */
   #setPosition() {
-    const i = this.constructor.collection[this.position].findIndex((x2) => x2 === this);
+    const [x, y] = this.#calcBasePosition();
+    const [dx, dy] = this.#calcOffsetPosition();
+    this.style.setProperty("--xz-notify-left", `calc(${x} - ${dx}px)`);
+    this.style.setProperty("--xz-notify-top", `calc(${y} + ${dy}px)`);
+  }
+  /**
+   * Calculates base position.
+   * @return {Array<number>}
+   */
+  #calcBasePosition() {
+    switch (this.position) {
+      case XZNotify.position.N:
+        return ["50%", "0%"];
+      case XZNotify.position.NE:
+        return ["100%", "0%"];
+      case XZNotify.position.E:
+        return ["100%", "50%"];
+      case XZNotify.position.SE:
+        return ["100%", "100%"];
+      case XZNotify.position.S:
+        return ["50%", "100%"];
+      case XZNotify.position.SW:
+        return ["0%", "100%"];
+      case XZNotify.position.W:
+        return ["0%", "50%"];
+      case XZNotify.position.NW:
+        return ["0%", "0%"];
+    }
+    ;
+  }
+  /**
+   * Calculates offset position.
+   * @return {Array<number>}
+   */
+  #calcOffsetPosition() {
+    const i = this.constructor.collection[this.position].findIndex((x) => x === this);
     const rect = this.getBoundingClientRect();
     const styles = getComputedStyle(this);
     const mt = parseInt(styles.getPropertyValue("margin-top"));
     const mr = parseInt(styles.getPropertyValue("margin-right"));
     const mb = parseInt(styles.getPropertyValue("margin-bottom"));
     const ml = parseInt(styles.getPropertyValue("margin-left"));
-    let x, y, dx, dy;
     switch (this.position) {
       case XZNotify.position.N:
-        [x, y] = ["50%", "0%"];
-        [dx, dy] = [rect.width / 2, i * (rect.height + mt)];
-        break;
+        return [rect.width / 2, i * (rect.height + mt)];
       case XZNotify.position.NE:
-        [x, y] = ["100%", "0%"];
-        [dx, dy] = [rect.width + ml + mr, i * (rect.height + mt)];
-        break;
+        return [rect.width + ml + mr, i * (rect.height + mt)];
       case XZNotify.position.E:
-        [x, y] = ["100%", "50%"];
-        [dx, dy] = [(i + 1) * (rect.width + ml + mr), -(rect.height / 2 + mt + mb)];
-        break;
+        return [(i + 1) * (rect.width + ml + mr), -(rect.height / 2 + mt + mb)];
       case XZNotify.position.SE:
-        [x, y] = ["100%", "100%"];
-        [dx, dy] = [rect.width + ml + mr, -(i + 1) * (rect.height + mt + mb)];
-        break;
+        return [rect.width + ml + mr, -(i + 1) * (rect.height + mt + mb)];
       case XZNotify.position.S:
-        [x, y] = ["50%", "100%"];
-        [dx, dy] = [rect.width / 2, -(i + 1) * (rect.height + mt + mb)];
-        break;
+        return [rect.width / 2, -(i + 1) * (rect.height + mt + mb)];
       case XZNotify.position.SW:
-        [x, y] = ["0%", "100%"];
-        [dx, dy] = [0, -(i + 1) * (rect.height + mt + mb)];
-        break;
+        return [0, -(i + 1) * (rect.height + mt + mb)];
       case XZNotify.position.W:
-        [x, y] = ["0%", "50%"];
-        [dx, dy] = [i * -(rect.width + ml), -(rect.height / 2 + mt + mb)];
-        break;
+        return [i * -(rect.width + ml), -(rect.height / 2 + mt + mb)];
       case XZNotify.position.NW:
-        [x, y] = ["0%", "0%"];
-        [dx, dy] = [0, i * (rect.height + mt)];
-        break;
+        return [0, i * (rect.height + mt)];
     }
     ;
-    this.style.setProperty("--xz-notify-left", `calc(${x} - ${dx}px)`);
-    this.style.setProperty("--xz-notify-top", `calc(${y} + ${dy}px)`);
   }
   /**
    * Re-position all elements.
@@ -254,7 +270,7 @@ class XZNotify extends HTMLElement {
   #render() {
     this.root.append(this.#styleElem);
     this.heading && this.root.appendChild(this.#buildHeading());
-    this.root.append(...this.children);
+    this.root.append(...this.childNodes);
   }
   /**
    * Builds heading <h3> element.
