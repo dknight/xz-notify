@@ -1,0 +1,3 @@
+ * Migrate to TypeScript?
+ * Try to use without Jest, native node runner:
+ * https://github.com/capricorn86/happy-dom/tree/master/packages/global-registrator

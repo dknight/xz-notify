@@ -1,11 +1,7 @@
-import XZNofity from '../index.js';
+import XZNotify from '../index.js';
 
 describe('Should test', () => {
   let component;
-  beforeAll(() => {
-    window.customElements.define(XZNofity.TAG_NAME, XZNofity);
-  });
-
   afterEach(() => {
     if (document.body.contains(component)) {
       document.body.removeChild(component);
@@ -13,18 +9,25 @@ describe('Should test', () => {
   });
 
   it('should instance of XZNotify', () => {
-    component = XZNofity.create('Hello world');
-    expect(component).toBeInstanceOf(XZNofity);
+    component = XZNotify.create('Hello world');
+    expect(component).toBeInstanceOf(XZNotify);
   });
 
   it('should render default notification', () => {
-    component = XZNofity.create('Hello world');
+    component = XZNotify.create('Hello world');
     document.body.appendChild(component);
     expect(component.parentElement).toBe(document.body);
   });
 
+  it('should render notification with title', () => {
+    component = XZNotify.create('Hello world', {title: 'Xyzzy'});
+    document.body.appendChild(component);
+    expect(component.title).toBe('Xyzzy');
+    expect(component.getAttribute('title')).toBe('Xyzzy');
+  });
+
   it('should render notification with trusted content', () => {
-    component = XZNofity.create('<p>Hello <b>world</b></p>', {}, true);
+    component = XZNotify.create('<p>Hello <b>world</b></p>', {}, true);
     document.body.appendChild(component);
     const p = component.shadowRoot.querySelector('p');
     const b = component.shadowRoot.querySelector('b');
@@ -33,7 +36,7 @@ describe('Should test', () => {
   });
 
   it('should render notification without trusted content', () => {
-    component = XZNofity.create('<p>Hello <b>world</b></p>', {}, false);
+    component = XZNotify.create('<p>Hello <b>world</b></p>', {}, false);
     document.body.appendChild(component);
     const p = component.shadowRoot.querySelector('p');
     const b = component.shadowRoot.querySelector('b');
@@ -42,26 +45,26 @@ describe('Should test', () => {
   });
 
   it('should create notification with defaults and reflect to props', () => {
-    component = XZNofity.create('Hello world!');
+    component = XZNotify.create('Hello world!');
     document.body.appendChild(component);
-    expect(component.position).toBe(XZNofity.defaults.POSITION);
-    expect(component.type).toBe(XZNofity.defaults.TYPE);
-    expect(component.expire).toBe(XZNofity.defaults.EXPIRE);
-    expect(component.closeable).toBe(XZNofity.defaults.CLOSEABLE);
+    expect(component.position).toBe(XZNotify.defaults.POSITION);
+    expect(component.type).toBe(XZNotify.defaults.TYPE);
+    expect(component.expire).toBe(XZNotify.defaults.EXPIRE);
+    expect(component.closeable).toBe(XZNotify.defaults.CLOSEABLE);
   });
 
   it('should create notification with attributes and reflect to props', () => {
-    component = XZNofity.create('Hello world!', {
-      position:  XZNofity.position.N,
-      type:      XZNofity.types.SUCCESS,
+    component = XZNotify.create('Hello world!', {
+      position:  XZNotify.position.N,
+      type:      XZNotify.types.SUCCESS,
       expire:    2000,
       closeable: true,
     });
     document.body.appendChild(component);
-    expect(component.position).toBe(XZNofity.position.N);
-    expect(component.getAttribute('position')).toBe(XZNofity.position.N);
-    expect(component.type).toBe(XZNofity.types.SUCCESS);
-    expect(component.getAttribute('type')).toBe(XZNofity.types.SUCCESS);
+    expect(component.position).toBe(XZNotify.position.N);
+    expect(component.getAttribute('position')).toBe(XZNotify.position.N);
+    expect(component.type).toBe(XZNotify.types.SUCCESS);
+    expect(component.getAttribute('type')).toBe(XZNotify.types.SUCCESS);
     expect(component.expire).toBe(2000);
     expect(component.getAttribute('expire')).toBe('2000');
     expect(component.closeable).toBe(true);
@@ -69,40 +72,40 @@ describe('Should test', () => {
   });
 
   it('should have css set', () => {
-    component = XZNofity.create('Hello world!');
+    component = XZNotify.create('Hello world!');
     expect(component.css.length).toBeGreaterThan(0);
   });
 
   describe('positions', () => {
-    Object.entries(XZNofity.position).forEach(([k, v]) => {
+    Object.entries(XZNotify.position).forEach(([k, v]) => {
       it(`it should position ${k}`, () => {
-        const component = XZNofity.create('Hi', {
+        const component = XZNotify.create('Hi', {
           position: v,
         });
         document.body.appendChild(component);
-        expect(component.position).toBe(XZNofity.position[k]);
+        expect(component.position).toBe(XZNotify.position[k]);
         component.remove();
       });
     });
 
     it('should position in different directions', () => {
       const comps = [
-        XZNofity.create('foo', {position: XZNofity.position.N}),
-        XZNofity.create('bar', {position: XZNofity.position.N}),
-        XZNofity.create('bar', {position: XZNofity.position.S}),
-        XZNofity.create('var', {position: XZNofity.position.S}),
-        XZNofity.create('jar', {position: XZNofity.position.S}),
-        XZNofity.create('jar', {position: XZNofity.position.NE}),
-        XZNofity.create('xyzzy', {position: XZNofity.position.NE}),
-        XZNofity.create('cow', {position: XZNofity.position.NE}),
-        XZNofity.create('farm', {position: XZNofity.position.NE}),
+        XZNotify.create('foo', {position: XZNotify.position.N}),
+        XZNotify.create('bar', {position: XZNotify.position.N}),
+        XZNotify.create('bar', {position: XZNotify.position.S}),
+        XZNotify.create('var', {position: XZNotify.position.S}),
+        XZNotify.create('jar', {position: XZNotify.position.S}),
+        XZNotify.create('jar', {position: XZNotify.position.NE}),
+        XZNotify.create('xyzzy', {position: XZNotify.position.NE}),
+        XZNotify.create('cow', {position: XZNotify.position.NE}),
+        XZNotify.create('farm', {position: XZNotify.position.NE}),
       ];
 
       comps.forEach((x) => document.body.appendChild(x));
 
-      expect(XZNofity.collection[XZNofity.position.N].length).toBe(2);
-      expect(XZNofity.collection[XZNofity.position.S].length).toBe(3);
-      expect(XZNofity.collection[XZNofity.position.NE].length).toBe(4);
+      expect(XZNotify.collection[XZNotify.position.N].length).toBe(2);
+      expect(XZNotify.collection[XZNotify.position.S].length).toBe(3);
+      expect(XZNotify.collection[XZNotify.position.NE].length).toBe(4);
 
       comps.forEach((x) => x.remove());
     });
@@ -123,7 +126,7 @@ describe('Should test', () => {
     });
 
     it('should be removed after animation', () => {
-      const component = XZNofity.create('foobar', {
+      const component = XZNotify.create('foobar', {
         expire: 1, // 1ms
       });
       document.body.appendChild(component);
@@ -132,7 +135,7 @@ describe('Should test', () => {
     });
 
     it('should be clicked and closed when closeable', () => {
-      const component = XZNofity.create('foobar', {
+      const component = XZNotify.create('foobar', {
         expire: 1, // 1ms
         closeable: true,
       });

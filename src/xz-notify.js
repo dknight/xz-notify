@@ -1,24 +1,35 @@
 /**
- * TODO write doc
- * TODO migrate to TypeScript?
- * TODO try to use without Jest:
- * https://github.com/capricorn86/happy-dom/tree/master/packages/global-registrator
+ * XZNotify is a framework agnostic web component to show floating
+ * notifications. Check details on https://www.github.com/dknight/xz-notify
  *
- * attributes:
- * type
- * expire
- * closeable
- * position
-*/
-export default class XZNotify extends HTMLElement {
+ * @author Dmitri Smirnov <https://www.whoop.ee/>
+ * @license MIT 2023
+ *
+ * @property {string} [type="info"] Type of the notification, like info,
+ * error, warning, success. See `XZNotify.types` for possible values.
+ * @property {number} [expire=10000] How long notification will be displayed.
+ * @property {boolean} [closeable=false] If is set on the click on the
+ * notification will close the notification.
+ * @property {string} [position="ne"] Position of the notification. See
+ * `XZNotify.position` for possible values.
+ * @property {string} [title] Title of the notification. Creates h3 element
+ * inside the notification.
+ *
+ * @fires XZNotify#open
+ * @fires XZNotify#close
+ *
+ * @example
+ * <xz-notify expire="8000" closeable>Message here</xz-notify>
+ */
+class XZNotify extends HTMLElement {
   /**
-   * XZNofity HTML tag name.
+   * XZNotify HTML tag name.
    * @type {string}
    */
   static TAG_NAME = 'xz-notify';
 
   /**
-   * Observed attributes if required. usually notication's life is very short
+   * Observed attributes if required. usually notification's life is very short
    * and no point to observe attributes.
    * @type {Array<string>}
    */
@@ -35,7 +46,6 @@ export default class XZNotify extends HTMLElement {
    * }}
    */
   static types = {
-    DEFAULT: 'default',
     INFO:    'info',
     WARNING: 'warning',
     SUCCESS: 'success',
@@ -53,7 +63,7 @@ export default class XZNotify extends HTMLElement {
 
   /**
    * Positioning constants.
-   * @type {Object<string, string>}
+   * @enum {Object<string, string>}
    */
   static position = {
     N:  'n',
@@ -83,11 +93,16 @@ export default class XZNotify extends HTMLElement {
 
   /**
    * Defaults for the component.
-   * @type {Object<string, string>}
+   * @type {{
+   *   EXPIRE: number,
+   *   TYPE: string,
+   *   POSITION: string,
+   *   CLOSEABLE: boolean
+   * }}
    */
   static defaults = {
-    EXPIRE:    5000,
-    TYPE:      this.types.DEFAULT,
+    EXPIRE:    10000,
+    TYPE:      this.types.INFO,
     POSITION:  this.position.NE,
     CLOSEABLE: false,
   };
@@ -115,81 +130,17 @@ export default class XZNotify extends HTMLElement {
   // Private vars here please...
   #styleElem = document.createElement('style');
   #forcedClose = false;
-  #css = `
-    :host {
-      display:        var(--xz-notify-display, block);
-      border-radius:  var(--xz-notify-border-radius, .375em);
-      border-width:   var(--xz-notify-border-width, .0625em);
-      border-style:   var(--xz-notify-border-style, solid);
-      font-family:    var(--xz-notify-font-family,\
-        system-ui, -apple-system, Arial, sans-serif);
-      font-size:      var(--xz-notify-font-size, 16px);
-      font-weight:    var(--xz-notify-font-weight, normal);
-      line-height:    var(--xz-notify-line-height, normal);
-      margin:         var(--xz-notify-margin, .5em);
-      padding:        var(--xz-notify-padding, 1em);
-      width:          var(--xz-notify-width, fit-content);
-      max-width:      var(--xz-notify-max-width, 28em);
-      min-width:      var(--xz-notify-min-width, 18em);
-      height:         var(--xz-notify-height, auto);
-      opacity:        var(--xz-notify-opacity, 1);
-      position:       var(--zx-notify-position, fixed);
-      left:           var(--xz-notify-left);
-      top:            var(--xz-notify-top);
-      z-index:        var(--xz-notify-z-index, auto);
-      animation:      var(--xz-notify-animation, xz-close .25s ease-in 1);
-      animation-play-state: paused;
-
-      background:    var(--xz-notify-default-background, #fcfcfd);
-      border-color:  var(--xz-notify-default-border-color, #e9ecef);
-      color:         var(--xz-notify-default-color, #495057);
-    }
-
-    :host([type="${this.constructor.types.SUCCESS}"]) {
-      background:    var(--xz-notify-default-background, #d1e7dd);
-      border-color:  var(--xz-notify-default-border-color, #a3cfbb);
-      color:         var(--xz-notify-default-color, #0a3922);
-    }
-    :host([type="${this.constructor.types.INFO}"]) {
-      background:    var(--xz-notify-default-background, #cfe2ff);
-      border-color:  var(--xz-notify-default-border-color, #9ec5fe);
-      color:         var(--xz-notify-default-color, #052c65);
-    }
-    :host([type="${this.constructor.types.WARNING}"]) {
-      background:    var(--xz-notify-default-background, #fff3cd);
-      border-color:  var(--xz-notify-default-border-color, #ffe69c);
-      color:         var(--xz-notify-default-color, #664d03);
-    }
-    :host([type="${this.constructor.types.ERROR}"]) {
-      background:    var(--xz-notify-default-background, #f8d7da);
-      border-color:  var(--xz-notify-default-border-color, #f1aeb5);
-      color:         var(--xz-notify-default-color, #58151c);
-    }
-
-    :host([closeable]) {
-      cursor: pointer;
-    }
-    :host([closeable]:hover) {
-      filter: brightness(.975);
-    }
-    :host p {margin-top: 0}
-    :host a {color: currentColor}
-
-    @keyframes xz-close {to {opacity: 0}}
-    @media (prefers-reduced-motion) {
-      :host {
-        animation-duration: 1ms;
-      }
-    }`;
-  // #slot = document.createElement('slot'); // TODO remove?
+  // injected in build stage;
+  #css = `{{CSS}}`;
 
   /**
-   * Construction function is called before instance of notification is created.
+   * Constructor is always called before instance of notification is connected
+   * to DOM.
    * @constructor
    */
   constructor() {
     super();
-    this.root = this.attachShadow({mode: 'open'});
+    this.root = this.attachShadow({mode: 'closed'});
     this.css = this.#css;
   }
 
@@ -272,7 +223,7 @@ export default class XZNotify extends HTMLElement {
    * @inheritdoc
    */
   connectedCallback() {
-    this.#reflectToProperites();
+    this.#reflectToProperties();
     this.constructor.collection[this.position].push(this);
     this.dispatchEvent(this.constructor.events.OPEN, this);
     this.#render();
@@ -283,7 +234,7 @@ export default class XZNotify extends HTMLElement {
    * Reflect attributes to properties for convineicen.
    * Use default if no attribute set.
    */
-  #reflectToProperites() {
+  #reflectToProperties() {
     this.type = (this.getAttribute('type')
         || this.constructor.defaults.TYPE).toLowerCase();
     this.position = (this.getAttribute('position')
@@ -291,6 +242,7 @@ export default class XZNotify extends HTMLElement {
     this.expire = Number(this.getAttribute('expire'))
         || this.constructor.defaults.EXPIRE;
     this.closeable = this.hasAttribute('closeable');
+    this.title = this.getAttribute('title');
   }
 
   /**
@@ -298,8 +250,20 @@ export default class XZNotify extends HTMLElement {
    * @private
    */
   #render() {
+    this.root.appendChild(this.#styleElem);
+    this.title && this.root.appendChild(this.#buildTitle());
     // TODO try to think out better solution, maybe slots?
-    this.root.append(this.#styleElem, ...this.childNodes);
+    this.root.append(...this.childNodes);
+  }
+
+  /**
+   * Builds title heading element.
+   * @return {HTMLHeadingElement}
+   */
+  #buildTitle() {
+    const title = document.createElement('h3');
+    title.innerText = this.title;
+    return title;
   }
 
   /**
@@ -308,6 +272,9 @@ export default class XZNotify extends HTMLElement {
    * @private
    */
   #hydrate() {
+    const hasAnimation = parseFloat(
+        window.getComputedStyle(this).getPropertyValue('animation-duration'),
+    ) > 0;
     this.#setPosition();
     let start;
     const tick = (ts) => {
@@ -315,21 +282,33 @@ export default class XZNotify extends HTMLElement {
         start = ts;
       }
       if (ts - start >= this.expire || this.#forcedClose) {
-        this.dataset.closing= '';
-        this.style.animationPlayState = 'running';
+        this.dataset.closing = '';
+        if (hasAnimation > 0) {
+          this.style.animationPlayState = 'running';
+        } else {
+          this.#close();
+        }
         return;
       }
       requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
-    this.addEventListener('animationend', this.remove);
+    this.addEventListener('animationend', this.#close);
     if (this.closeable) {
       this.addEventListener('click', this.closeHandler.bind(this));
     }
   }
 
   /**
-   * Handler when closeable is true and clicked on the nofication.
+   * Closes the notification.
+   */
+  #close() {
+    this.dispatchEvent(this.constructor.events.CLOSE, this);
+    this.remove();
+  }
+
+  /**
+   * Handler when closeable is true and clicked on the notification.
    * @param {MouseEvent|PointerEvent} e
    */
   closeHandler(e) {
@@ -340,9 +319,12 @@ export default class XZNotify extends HTMLElement {
    * @inheritdoc
    */
   disconnectedCallback() {
-    this.dispatchEvent(this.constructor.events.CLOSE, this);
     this.constructor.collection[this.position]
         = this.constructor.collection[this.position].filter((x) => x !== this);
     this.#setPositionAll();
   }
 }
+
+window.customElements.define(XZNotify.TAG_NAME, XZNotify);
+
+export default XZNotify;
