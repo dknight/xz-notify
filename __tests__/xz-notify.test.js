@@ -13,6 +13,15 @@ describe('Should test', () => {
     expect(component).toBeInstanceOf(XZNotify);
   });
 
+  it('should have valid tag name', () => {
+    component = XZNotify.create('Hello world');
+    expect(component.nodeName.toLowerCase()).toBe(XZNotify.TAG_NAME);
+  });
+
+  it('should validate observedAttributes', () => {
+    expect(XZNotify.observedAttributes).toEqual([]);
+  });
+
   it('should render default notification', () => {
     component = XZNotify.create('Hello world');
     document.body.appendChild(component);
@@ -51,6 +60,7 @@ describe('Should test', () => {
     expect(component.type).toBe(XZNotify.defaults.TYPE);
     expect(component.expire).toBe(XZNotify.defaults.EXPIRE);
     expect(component.closeable).toBe(XZNotify.defaults.CLOSEABLE);
+    expect(component.grouped).toBe(XZNotify.defaults.GROUPED);
   });
 
   it('should create notification with attributes and reflect to props', () => {
@@ -59,6 +69,7 @@ describe('Should test', () => {
       type:      XZNotify.types.SUCCESS,
       expire:    2000,
       closeable: true,
+      grouped:   true,
     });
     document.body.appendChild(component);
     expect(component.position).toBe(XZNotify.position.N);
@@ -69,11 +80,26 @@ describe('Should test', () => {
     expect(component.getAttribute('expire')).toBe('2000');
     expect(component.closeable).toBe(true);
     expect(component.hasAttribute('closeable')).toBe(true);
+    expect(component.closeable).toBe(true);
+    expect(component.hasAttribute('grouped')).toBe(true);
   });
 
-  it('should have css set', () => {
+  it('should fallback in case of wrong expire value', () => {
+    ['abc', null, {}, false, true].forEach((x) => {
+      const component = XZNotify.create('Hello world!', {
+        expire: x,
+      });
+      document.body.appendChild(component);
+      expect(component.expire).toBe(XZNotify.defaults.EXPIRE);
+      component.remove();
+    });
+  });
+
+  it('should have default styles', () => {
     component = XZNotify.create('Hello world!');
-    expect(component.css.length).toBeGreaterThan(0);
+    document.body.appendChild(component);
+    const contents = component.shadowRoot.querySelector('style');
+    expect(contents.textContent.length).toBeGreaterThan(0);
   });
 
   describe('positions', () => {
@@ -144,6 +170,16 @@ describe('Should test', () => {
       component.click();
       expect(component.dataset.closing).toBe('');
       component.remove();
+    });
+
+    it('should be without animation', () => {
+      const component = XZNotify.create('foobar', {
+        expire: 0, // 1ms
+        closeable: true,
+      });
+      component.style.animationDuration = '0s';
+      document.body.appendChild(component);
+      component.click();
     });
   });
 });

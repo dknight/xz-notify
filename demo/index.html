@@ -9,7 +9,7 @@
     b { color: orangered; }
   </style>
   <!-- <link rel="stylesheet" href="../dist/themes/bootstrap.css"> -->
-  <!-- <link rel="stylesheet" href="../dist/themes/simple.css"> -->
+  <link rel="stylesheet" href="../dist/themes/simple.css">
 </head>
 <body>
   <form id="add-notification-form">
@@ -37,6 +37,8 @@
   <script type="module">
     import XZNotify from '../dist/xz-notify.js';
 
+    let i = 0;
+
     const main = document.querySelector('main');
     const form = document.getElementById('add-notification-form');
     const msg = 'Lorem ipsum dolor sit, <b>amet consectetur adipisicing</b> elit.';
@@ -50,7 +52,8 @@
         expire,
         position,
         closeable: '',
-        heading: 'hello world',
+        // grouped: '',
+        heading: `hello world ${++i}`,
       }, true);
       document.body.appendChild(ntf);
     });

@@ -1,25 +1,40 @@
 /**
- * XZNotify is a framework agnostic web component to show floating
- * notifications. Check details on https://www.github.com/dknight/xz-notify
+ * XZNotify is a framework-agnostic web component to show floating
+ * notifications. The component uses a first-in, first-out queue.data structure,
+ * new notifications are automatically appended to the end of the queue.
+ * Also, each appended component automatically computes its own position.
+ * More details on https://www.github.com/dknight/xz-notify
  *
  * @author Dmitri Smirnov <https://www.whoop.ee/>
  * @license MIT 2023
+ * @version {{VERSION}}
  *
- * @property {string} [type="info"] Type of the notification, like info,
- * error, warning, success. See `XZNotify.types` for possible values.
- * @property {number} [expire=10000] How long notification will be displayed.
+ * @property {string} [type="info"] Type of notification, like info, error,
+ * warning, or success. See `XZNotify.types` for possible values.
+ * @property {number} [expire=10000] How long the notification will be
+ * displayed. If expire is zero or less, the notification will be closed
+ * immediately. If the expiration value cannot be parsed into a number,
+ * then default fallback is used.
  * @property {boolean} [closeable=false] If is set on the click on the
  * notification will close the notification.
- * @property {string} [position="ne"] Position of the notification. See
- * `XZNotify.position` for possible values.
- * @property {string} [heading] Heading of the notification. Creates h3 element
- * inside the notification.
+ * @property {Positions} [position="ne"] Position of the notification.
+ * @property {string} [heading] Heading of the notification. Creates an h3
+ * element inside the notification.
+ * @property {boolean} [grouped=false] If grouped is set then offset position
+ * is not recalculated and notifications are stacked.
  *
  * @fires XZNotify#open
  * @fires XZNotify#close
  *
  * @example
- * <xz-notify expire="8000" closeable>Message here</xz-notify>
+ * <!-- Declarative way -->
+ * <xz-notify expire="8000" closeable>Hello world!</xz-notify>
+ * @example
+ * // Programmatic way
+ * document.body.append(XZNotify.create('Hello world!', {
+ *   expire: 8000,
+ *   closeable: true,
+ * }));
  */
 class XZNotify extends HTMLElement {
   /**
@@ -29,21 +44,15 @@ class XZNotify extends HTMLElement {
   static TAG_NAME = 'xz-notify';
 
   /**
-   * Observed attributes if required. usually notification's life is very short
-   * and no point to observe attributes.
-   * @type {Array<string>}
+   * Observed attributes if required. Usually, a notification's life is very
+   * short, and there is no point in observing attributes.
+   * @type {string[]}
    */
   static observedAttributes = [];
 
   /**
    * Notification's possible types.
-   * @type {{
-   *  DEFAULT: string,
-   *  INFO: string,
-   *  WARNING: string,
-   *  SUCCESS: string,
-   *  ERROR: string
-   * }}
+   * @type {Types}
    */
   static types = {
     INFO:    'info',
@@ -54,7 +63,7 @@ class XZNotify extends HTMLElement {
 
   /**
    * Events for the component.
-   * @type {{OPEN: CustomEvent, CLOSE: CustomEvent}}
+   * @type {Events}
    */
   static events = {
     OPEN:  new CustomEvent('xz-notify:open', {bubbles: true}),
@@ -63,7 +72,7 @@ class XZNotify extends HTMLElement {
 
   /**
    * Positioning constants.
-   * @enum {Object<string, string>}
+   * @type {Positions}
    */
   static position = {
     N:  'n',
@@ -78,7 +87,7 @@ class XZNotify extends HTMLElement {
 
   /**
    * Contains currently opened notifications.
-   * @type {Object<string, Array<XZNotify>>}
+   * @type {Object<Position, XZNotify[]>}
    */
   static collection = {
     [this.position.N]:  [],
@@ -92,12 +101,12 @@ class XZNotify extends HTMLElement {
   };
 
   /**
-   * Defaults for the component.
    * @type {{
    *   EXPIRE: number,
    *   TYPE: string,
    *   POSITION: string,
-   *   CLOSEABLE: boolean
+   *   CLOSEABLE: boolean,
+   *   GROUPED: false
    * }}
    */
   static defaults = {
@@ -105,6 +114,7 @@ class XZNotify extends HTMLElement {
     TYPE:      this.types.INFO,
     POSITION:  this.position.NE,
     CLOSEABLE: false,
+    GROUPED:   false,
   };
 
   /**
@@ -130,48 +140,44 @@ class XZNotify extends HTMLElement {
   // Private vars here please...
   #styleElem = document.createElement('style');
   #forcedClose = false;
-  // injected in build stage;
-  #css = `{{CSS}}`;
 
   /**
-   * Constructor is always called before instance of notification is connected
-   * to DOM.
-   * @constructor
+   * Constructor is always called before an instance of notification is
+   * connected to the DOM.
    */
   constructor() {
     super();
     this.root = this.attachShadow({mode: 'open'});
-    this.css = this.#css;
-  }
-
-  /**
-   * @type {string}
-   */
-  get css() {
-    return this.#css;
-  }
-
-  /**
-   * @param {string} v
-   */
-  set css(v) {
-    this.#css = v;
-    this.#styleElem.textContent = this.#css;
+    this.#styleElem.textContent = '{{CSS}}';
   }
 
   /**
    * Calculates and sets the position of the notification.
    */
   #setPosition() {
+    const i = this.grouped ? 0 : this.#findIndex();
     const [x, y] = this.#calcBasePosition();
-    const [dx, dy] = this.#calcOffsetPosition();
+    const [dx, dy] = this.#calcOffsetPosition(i);
     this.style.setProperty('--xz-notify-left', `calc(${x} - ${dx}px)`);
     this.style.setProperty('--xz-notify-top', `calc(${y} + ${dy}px)`);
+    if (this.grouped) {
+      const c = this.constructor.collection[this.position].length;
+      this.style.setProperty('--xz-notify-zIndex', 1e4 - c);
+    }
+  }
+
+  /**
+   * Gets the index of the current notification in collection.
+   * @return {number}
+   */
+  #findIndex() {
+    return this.constructor.collection[this.position]
+        .findIndex((x) => x === this);
   }
 
   /**
    * Calculates base position.
-   * @return {Array<number>}
+   * @return {number[]}
    */
   #calcBasePosition() {
     switch (this.position) {
@@ -196,11 +202,10 @@ class XZNotify extends HTMLElement {
 
   /**
    * Calculates offset position.
-   * @return {Array<number>}
+   * @param {number} i
+   * @return {number[]}
    */
-  #calcOffsetPosition() {
-    const i = this.constructor.collection[this.position]
-        .findIndex((x) => x === this);
+  #calcOffsetPosition(i) {
     const rect = this.getBoundingClientRect();
     const styles = getComputedStyle(this);
     const mt = parseInt(styles.getPropertyValue('margin-top'));
@@ -248,7 +253,7 @@ class XZNotify extends HTMLElement {
   }
 
   /**
-   * Reflect attributes to properties for convineicen.
+   * Reflect attributes to properties for convenience.
    * Use default if no attribute set.
    */
   #reflectToProperties() {
@@ -256,15 +261,24 @@ class XZNotify extends HTMLElement {
         || this.constructor.defaults.TYPE).toLowerCase();
     this.position = (this.getAttribute('position')
         || this.constructor.position.NE).toLowerCase();
-    this.expire = Number(this.getAttribute('expire'))
-        || this.constructor.defaults.EXPIRE;
+    this.expire = this.getAttribute('expire');
+    if (this.expire === null) {
+      this.expire = this.constructor.defaults.EXPIRE;
+    } else if (this.expire === '0') {
+      this.expire = 0;
+    } else {
+      this.expire = Number(this.expire);
+      if (Number.isNaN(this.expire)) {
+        this.expire = this.constructor.defaults.EXPIRE;
+      }
+    }
     this.closeable = this.hasAttribute('closeable');
     this.heading = this.getAttribute('heading');
+    this.grouped = this.hasAttribute('grouped');
   }
 
   /**
    * Renders element.
-   * @private
    */
   #render() {
     this.root.append(this.#styleElem);
@@ -284,9 +298,8 @@ class XZNotify extends HTMLElement {
   }
 
   /**
-   * Added all interactivity here for potential SSR.
-   * But actually can be done in render() or connectedCallback().
-   * @private
+   * Added all interactivity here for potential SSR. But it can actually be
+   * done in render() or connectedCallback().
    */
   #hydrate() {
     const hasAnimation = parseFloat(
@@ -345,3 +358,35 @@ class XZNotify extends HTMLElement {
 window.customElements.define(XZNotify.TAG_NAME, XZNotify);
 
 export default XZNotify;
+
+/**
+ * @typedef Positions
+ * @property {Position} [N="n"]
+ * @property {Position} [NE="ne"]
+ * @property {Position} [E="e"]
+ * @property {Position} [SE="se"]
+ * @property {Position} [S="s"]
+ * @property {Position} [SW="sw"]
+ * @property {Position} [W="w"]
+ * @property {Position} [NW="nw"]
+ */
+
+/**
+ * @typedef Position
+ * @property {("n"|"ne"|"e"|"se"|"s"|"sw"|"w"|"nw")}
+ */
+
+/**
+ * @typedef Types
+ * @property {string} [DEFAULT="default"]
+ * @property {string} [INFO="info"]
+ * @property {string} [WARNING="string"]
+ * @property {string} [SUCCESS="string"]
+ * @property {string} [ERROR="string"]
+ */
+
+/**
+ * @typedef Events
+ * @property {CustomEvent} OPEN
+ * @property {CustomEvent} CLOSE
+ */

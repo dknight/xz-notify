@@ -12,7 +12,6 @@
     },
     "rules": {
         "key-spacing": "off",
-        "one-var": "off",
         "operator-linebreak": ["error", "before"]
     }
 }

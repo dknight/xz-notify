@@ -5,32 +5,24 @@ ESBUILD="$NPX esbuild"
 SRC=./src
 DIST=./dist
 BASENAME=xz-notify
-theme=default
-tmp_styles_file="tmp.min.css"
+version=$(node -e "console.log(require('./package.json').version)")
+minified=$(cat $SRC/xz-notify.css | $ESBUILD --minify --loader=css)
+banner="//$BASENAME.min.js,${version},https://github.com/dknight/xz-notify"
 
-build_with_theme() {
-  cat $SRC/xz-notify.css > $tmp_styles_file
-	minified=$(esbuild $tmp_styles_file --minify --allow-overwrite --outfile=/dev/stdout)
+cp $SRC/$BASENAME.js $DIST/$BASENAME.js
 
-	cp $SRC/$BASENAME.js $DIST/$BASENAME.js
-
-	sed -i "s/{{CSS}}/$minified/g" $DIST/$BASENAME.js
-
-	rm -f $tmp_styles_file
-}
-
-build_with_theme $theme
+# Substitute
+sed -i "s/{{CSS}}/$minified/g" $DIST/$BASENAME.js
+sed -i "s/{{VERSION}}/$version/g" $DIST/$BASENAME.js
 
 # Build module JS
-$ESBUILD $DIST/$BASENAME.js --minify --sourcemap\
-		--banner:js="// $BASENAME.min.js, https://github.com/dknight/xz-notify"\
-		--outfile=$DIST/$BASENAME.min.js
+$ESBUILD $DIST/$BASENAME.js --minify --sourcemap --legal-comments=none\
+		--banner:js="$banner" --outfile=$DIST/$BASENAME.min.js
 
 # Build CommonJS
-$ESBUILD $DIST/$BASENAME.js --format=cjs\
-  --outfile=$DIST/$BASENAME.cjs.js
+$ESBUILD $DIST/$BASENAME.js --format=cjs --outfile=$DIST/$BASENAME.cjs.js
 
-# For those who using .mjs extension.
+# For those who prefers .mjs extension
 cp $DIST/$BASENAME.js $DIST/$BASENAME.mjs
 
 # Copy themes

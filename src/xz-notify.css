@@ -1,14 +1,14 @@
 :host {
   --xz-notify-background-color: #f7f7f7;
   --xz-notify-heading-color: currentColor;
+  --xz-notify-zIndex: auto;
 
   display: block;
   position: fixed;
   left: var(--xz-notify-left);
   top: var(--xz-notify-top);
   border-radius: 0;
-  border-width: 0;
-  border-style: solid;
+  border: 1px solid;
   font-family: system-ui, -apple-system, Arial, sans-serif;
   font-size: 16px;
   font-weight: normal;
@@ -19,7 +19,7 @@
   max-width: 28em;
   min-width: 18em;
   height: auto;
-  z-index: auto;
+  z-index: var(--xz-notify-zIndex);
   animation: xz-notify-close .4s ease-in 1;
   animation-play-state: paused; /* required for close */
   background:
