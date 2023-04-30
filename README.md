@@ -1,7 +1,7 @@
 # XZ Notify
 
 [![License MIT](https://img.shields.io/npm/l/xz-notify)](https://github.com/dknight/xz-notify/blob/main/LICENSE)
-[![Build](https://github.com/dknight/xz-notify/actions/workflows/tests.yml/badge.svg)](https://github.com/dknight/xz-notify/actions/workflows/tests.yml)
+[![Build](https://github.com/dknight/xz-notify/actions/workflows/node.js.yml/badge.svg)](https://github.com/dknight/xz-notify/actions/workflows/node.js.yml)
 ![Version](https://img.shields.io/npm/v/xz-notify)
 
 XZNotify is a framework-agnostic web component to show floating notifications on the web-page.
