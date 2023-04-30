@@ -1,6 +1,6 @@
 {
   "name": "xz-notify",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Notifications based on web components.",
   "main": "index.js",
   "scripts": {
@@ -17,8 +17,11 @@
   },
   "keywords": [
     "notification",
-    "webcomponents",
-    "agnostic"
+    "notice",
+    "alert",
+    "web components",
+    "agnostic",
+    "vanilla"
   ],
   "author": "Dmitri Smirnov",
   "license": "MIT",
