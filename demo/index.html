@@ -3,73 +3,147 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <!-- <script src="notify.js" type="module"></script> -->
+    <title>XZNotify - Demo page</title>
     <link rel="stylesheet" href="simple.min.css">
-    <!-- <link rel="stylesheet" href="../dist/themes/bootstrap.css"> -->
-    <link rel="stylesheet" href="../dist/themes/simple.css">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- themes -->
+    <link id="theme-bootstrap" rel="stylesheet" href="../dist/themes/bootstrap.css" disabled>
+    <link id="theme-simple" rel="stylesheet" href="../dist/themes/simple.css" disabled>
   </head>
   <body>
     <header>
-      <h1>XZNotify</h1>
+      <nav>
+        <a href="https://github.com/dknight/xz-notify">
+          <svg class="icon" viewBox="0 0 32 32">
+            <path
+              d="M16 0.395c-8.836 0-16 7.163-16 16 0 7.069 4.585 13.067 10.942 15.182 0.8 0.148 1.094-0.347 1.094-0.77 0-0.381-0.015-1.642-0.022-2.979-4.452 0.968-5.391-1.888-5.391-1.888-0.728-1.849-1.776-2.341-1.776-2.341-1.452-0.993 0.11-0.973 0.11-0.973 1.606 0.113 2.452 1.649 2.452 1.649 1.427 2.446 3.743 1.739 4.656 1.33 0.143-1.034 0.558-1.74 1.016-2.14-3.554-0.404-7.29-1.777-7.29-7.907 0-1.747 0.625-3.174 1.649-4.295-0.166-0.403-0.714-2.030 0.155-4.234 0 0 1.344-0.43 4.401 1.64 1.276-0.355 2.645-0.532 4.005-0.539 1.359 0.006 2.729 0.184 4.008 0.539 3.054-2.070 4.395-1.64 4.395-1.64 0.871 2.204 0.323 3.831 0.157 4.234 1.026 1.12 1.647 2.548 1.647 4.295 0 6.145-3.743 7.498-7.306 7.895 0.574 0.497 1.085 1.47 1.085 2.963 0 2.141-0.019 3.864-0.019 4.391 0 0.426 0.288 0.925 1.099 0.768 6.354-2.118 10.933-8.113 10.933-15.18 0-8.837-7.164-16-16-16z">
+            </path>
+          </svg>
+          Github
+        </a>
+      </nav>
+      <h1>XZNotify Demo Page</h1>
+      <p>
+        XZNotify is a framework-agnostic web component to show floating notifications on the web-page.
+      </p>
     </header>
     <main>
+      <h2>Create a notification with params</h2>
+      <p class="notice">
+        If you like XZNotify please give a star on
+        <a href="https://www.github.com/dknight/xz-notify">Github</a> ⭐
+      </p>
       <form id="add-notification-form">
-        <select id="type-value">
-          <option selected>default</option>
-          <option>info</option>
-          <option>success</option>
-          <option>warning</option>
-          <option>error</option>
-        </select>
-        <select id="position-value">
-          <option>n</option>
-          <option selected>ne</option>
-          <option>e</option>
-          <option>se</option>
-          <option>s</option>
-          <option>sw</option>
-          <option>w</option>
-          <option>nw</option>э
-        </select>
-        <input type="number" id="expire" value="3000">
-        <button type="submit">Add notification</button>
+        <div>
+          <p>
+            <label for="theme">Theme</label>
+            <select id="theme">
+              <option selected>default</option>
+              <option>bootstrap</option>
+              <option>simple</option>
+            </select>
+          </p>
+          <hr>
+        </div>
+        <div>
+          <p>
+            <label for="type-value">Type</label>
+            <select id="type-value">
+              <option selected>default</option>
+              <option>info</option>
+              <option>success</option>
+              <option>warning</option>
+              <option>error</option>
+            </select>
+          </p>
+          <p>
+            <label for="position-value">Position</label>
+            <select id="position-value">
+              <option>n</option>
+              <option selected>ne</option>
+              <option>e</option>
+              <option>se</option>
+              <option>s</option>
+              <option>sw</option>
+              <option>w</option>
+              <option>nw</option>э
+            </select>
+          </p>
+          <p>
+            <label for="expire">Expired in</label>
+            <input type="number" id="expire" value="10000">
+          </p>
+          <p>
+            <label>
+              Closeable
+              <input type="checkbox" id="closeable">
+            </label>
+            <label>
+              Grouped
+              <input type="checkbox" id="grouped">
+            </label>
+          </p>
+        </div>
+        <div>
+          <p>
+            <label for="expire">Heading</label>
+            <input type="text" id="heading" value="Hello world!">
+          </p>
+          <p>
+            <label for="expire">Content</label>
+            <textarea id="content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, quidem!</textarea>
+          </p>
+        </div>
+        <div>
+          <button type="submit">Add notification</button>
+        </div>
       </form>
     </main>
     <footer>
       <p>
-        Thanks to amazing <a href="https://simplecss.org/">Simple CSS</a>
-        for this page.
+        &copy; MIT 2023
+        <a href="https://github.com/dknight/xz-notify">
+          Source code
+        </a>
       </p>
       <p>
-        <a href="https://www.github.com/dknight/xz-notify">XZNotify Source</a>
+        Thanks to amazing <a href="https://simplecss.org/">Simple CSS</a>
+        for this page.
       </p>
     </footer>
     <script type="module">
       import XZNotify from '../dist/xz-notify.js';
 
-      let i = 0;
-
-      const main = document.querySelector('main');
       const form = document.getElementById('add-notification-form');
-      const msg = 'Lorem ipsum dolor sit, <b>amet consectetur adipisicing</b> elit.';
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         const type = document.getElementById('type-value').value;
         const position = document.getElementById('position-value').value;
         const expire = document.getElementById('expire').value;
-        const ntf = XZNotify.create(msg, {
+        const closeable = document.getElementById('closeable').checked;
+        const grouped = document.getElementById('grouped').checked;
+        const heading = document.getElementById('heading').value;
+        const content = document.getElementById('content').value;
+        const ntf = XZNotify.create(content, {
           type,
           expire,
           position,
-          closeable: '',
-          // grouped: '',
-          heading: `hello world ${++i}`,
+          closeable,
+          grouped,
+          heading,
         }, true);
         document.body.appendChild(ntf);
+
+        const theme = document.getElementById('theme');
+        theme.addEventListener('change', (e) => {
+          document.querySelectorAll('[id^="theme-"]').forEach((x) => x.disabled = true);
+          const themeStyle = document.getElementById(`theme-${theme.value}`);
+          if (themeStyle) {
+            themeStyle.disabled = false;
+          }
+        });
       });
-      document.body.addEventListener('xz-notify:open', (e) => console.log(e, 'OPEN'));
-      document.body.addEventListener('xz-notify:close', (e) => console.log(e, 'CLOSE'));
     </script>
   </body>
 </html>
