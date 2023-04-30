@@ -1,11 +1,8 @@
 # XZ notify
 
-XZNotify is a framework-agnostic web component to show floating
-notifications on the web-page.
+XZNotify is a framework-agnostic web component to show floating notifications on the web-page.
 
-TODO add gif
-
-Check out the [demo page](https://www.whoop.ee/xz-notify/demo) for more amazing examples.
+Check out the [demo page](https://www.whoop.ee/xz-notify/demo) for more examples.
 
 ## Install
 
@@ -82,6 +79,21 @@ Method to create XZNotify instance.
 | content    | string   |         | Content of the notification. |
 | attributes | Object   | {}      | Attributes of the `<xz-notify>` element. |
 | trusted    | boolean  | false   | If `true` then HTML is allowed in content. Might not be safe for XSS. |
+
+##### Events
+
+Notification dispatches custom events on the open state and when expired.
+
+| event name      | detail   |
+|-----------------|----------|
+| xz-notify:open  | XZNotify |
+| xz-notify:close | XZNotify |
+
+```js
+document.body.addEventListener('xz-notify:open', (e) => console.log(e));
+document.body.addEventListener('xz-notify:close', (e) => console.log(e));
+```
+
 
 ## Styling
 
