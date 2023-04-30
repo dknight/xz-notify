@@ -1,64 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <!-- <script src="notify.js" type="module"></script> -->
-  <style>
-    b { color: orangered; }
-  </style>
-  <!-- <link rel="stylesheet" href="../dist/themes/bootstrap.css"> -->
-  <link rel="stylesheet" href="../dist/themes/simple.css">
-</head>
-<body>
-  <form id="add-notification-form">
-    <select id="type-value">
-      <option selected>default</option>
-      <option>info</option>
-      <option>success</option>
-      <option>warning</option>
-      <option>error</option>
-    </select>
-    <select id="position-value">
-      <option>n</option>
-      <option selected>ne</option>
-      <option>e</option>
-      <option>se</option>
-      <option>s</option>
-      <option>sw</option>
-      <option>w</option>
-      <option>nw</option>
-    </select>
-    <input type="number" id="expire" value="3000">
-    <button type="submit">Add notification</button>
-  </form>
-  <main></main>
-  <script type="module">
-    import XZNotify from '../dist/xz-notify.js';
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <script src="notify.js" type="module"></script> -->
+    <link rel="stylesheet" href="simple.min.css">
+    <!-- <link rel="stylesheet" href="../dist/themes/bootstrap.css"> -->
+    <link rel="stylesheet" href="../dist/themes/simple.css">
+  </head>
+  <body>
+    <header>
+      <h1>XZNotify</h1>
+    </header>
+    <main>
+      <form id="add-notification-form">
+        <select id="type-value">
+          <option selected>default</option>
+          <option>info</option>
+          <option>success</option>
+          <option>warning</option>
+          <option>error</option>
+        </select>
+        <select id="position-value">
+          <option>n</option>
+          <option selected>ne</option>
+          <option>e</option>
+          <option>se</option>
+          <option>s</option>
+          <option>sw</option>
+          <option>w</option>
+          <option>nw</option>э
+        </select>
+        <input type="number" id="expire" value="3000">
+        <button type="submit">Add notification</button>
+      </form>
+    </main>
+    <footer>
+      <p>
+        Thanks to amazing <a href="https://simplecss.org/">Simple CSS</a>
+        for this page.
+      </p>
+      <p>
+        <a href="https://www.github.com/dknight/xz-notify">XZNotify Source</a>
+      </p>
+    </footer>
+    <script type="module">
+      import XZNotify from '../dist/xz-notify.js';
 
-    let i = 0;
+      let i = 0;
 
-    const main = document.querySelector('main');
-    const form = document.getElementById('add-notification-form');
-    const msg = 'Lorem ipsum dolor sit, <b>amet consectetur adipisicing</b> elit.';
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const type = document.getElementById('type-value').value;
-      const position= document.getElementById('position-value').value;
-      const expire = document.getElementById('expire').value;
-      const ntf = XZNotify.create(msg, {
-        type,
-        expire,
-        position,
-        closeable: '',
-        // grouped: '',
-        heading: `hello world ${++i}`,
-      }, true);
-      document.body.appendChild(ntf);
-    });
-    document.body.addEventListener('xz-notify:open', (e) => console.log(e, 'OPEN'));
-    document.body.addEventListener('xz-notify:close', (e) => console.log(e, 'CLOSE'));
-  </script>
-</body>
+      const main = document.querySelector('main');
+      const form = document.getElementById('add-notification-form');
+      const msg = 'Lorem ipsum dolor sit, <b>amet consectetur adipisicing</b> elit.';
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const type = document.getElementById('type-value').value;
+        const position = document.getElementById('position-value').value;
+        const expire = document.getElementById('expire').value;
+        const ntf = XZNotify.create(msg, {
+          type,
+          expire,
+          position,
+          closeable: '',
+          // grouped: '',
+          heading: `hello world ${++i}`,
+        }, true);
+        document.body.appendChild(ntf);
+      });
+      document.body.addEventListener('xz-notify:open', (e) => console.log(e, 'OPEN'));
+      document.body.addEventListener('xz-notify:close', (e) => console.log(e, 'CLOSE'));
+    </script>
+  </body>
 </html>
