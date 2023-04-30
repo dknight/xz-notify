@@ -1,0 +1,54 @@
+/* NB! Bar is not meant to be positioned to E and W. */
+xz-notify {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  margin: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
+  animation: slide-down .27s linear forwards;
+  padding: 1em 25%;
+  box-shadow: 
+      0 2px 8px rgba(0,0,0,.22),
+      0 -1px 0 0 #fff inset;
+  color: #000;
+  background-color: #efefef;
+}
+
+xz-notify[type="info"] {
+  color: #31708f;
+  background-color: #d9edf7;
+}
+xz-notify[type="success"] {
+  color:#060;
+  background-color:#bbffb6;
+}
+xz-notify[type="warning"] {
+  color: #000;
+  background-color: #fffaaa;
+}
+xz-notify[type="error"] {
+  color: #d00;
+  background-color: #fdd;
+}
+
+xz-notify[data-closing] {
+  animation-direction: reverse;
+  animation-iteration-count: 2;
+}
+
+xz-notify[position*="s"] {
+  animation-name: slide-up;
+  border-bottom: none;
+  border-top: 1px solid #ddd;
+  box-shadow: inset 0 1px 0 0 #fff;
+}
+
+@keyframes slide-down {
+  from {clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);}
+  to {clip-path: polygon(0 0, 100% 0, 100% 110%, 0 110%);}
+}
+
+@keyframes slide-up {
+  from {clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);}
+  to {clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 0);}
+}

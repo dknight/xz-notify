@@ -310,8 +310,8 @@ class XZNotify extends HTMLElement {
         start = ts;
       }
       if (ts - start >= this.expire || this.#forcedClose) {
-        this.dataset.closing = '';
-        if (hasAnimation > 0) {
+        if (hasAnimation) {
+          this.dataset.closing = '1';
           this.style.animationPlayState = 'running';
         } else {
           this.#close();
@@ -331,6 +331,10 @@ class XZNotify extends HTMLElement {
    * Closes the notification.
    */
   #close() {
+    if (!this.dataset.closing) {
+      this.style.animationPlayState = 'paused';
+      return;
+    }
     this.dispatchEvent(this.constructor.events.CLOSE, this);
     this.remove();
   }

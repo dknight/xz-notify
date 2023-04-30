@@ -124,11 +124,12 @@ Include the theme in the HTML file:
 <link rel="stylesheet" href="bootstrap.css">
 ```
 
-At the moment, there are some built-in themes.
+At the moment, there are some built-in themes. More themes will be added in future.
 
 * default
 * bootstrap
 * simple
+* bar
 
 ## Contribution
 

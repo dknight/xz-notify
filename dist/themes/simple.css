@@ -5,6 +5,7 @@ xz-notify {
   border-radius: 0;
   border-width: 0;
   background: #9c9c9c;
+  --xz-notify-heading-color: currentColor;
 }
 xz-notify[type="info"] {
   background: #5f9eb7;

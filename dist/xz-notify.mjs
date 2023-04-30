@@ -147,7 +147,7 @@ class XZNotify extends HTMLElement {
   constructor() {
     super();
     this.root = this.attachShadow({mode: 'open'});
-    this.#styleElem.textContent = ':host{--xz-notify-background-color: #f7f7f7;--xz-notify-heading-color: currentColor;--xz-notify-zIndex: auto;display:block;position:fixed;left:var(--xz-notify-left);top:var(--xz-notify-top);border-radius:0;border:0 solid;font-family:system-ui,-apple-system,Arial,sans-serif;font-size:16px;font-weight:400;line-height:normal;margin:.5em;padding:1.5em;width:fit-content;max-width:28em;min-width:18em;height:auto;z-index:var(--xz-notify-zIndex);animation:xz-notify-close .4s ease-in 1;animation-play-state:paused;background:var(--xz-notify-background-color) linear-gradient(to right,var(--xz-notify-heading-color) .25em,transparent 0);border-color:transparent;color:#666}@keyframes xz-notify-close{to{opacity:0}}:host([closeable]){cursor:pointer}:host([closeable]:hover):after{content:"";display:block;width:100%;height:100%;background:rgba(0,0,0,.05);position:absolute;top:0;left:0;pointer-events:none}:host p{margin-top:0}:host a{color:currentColor}:host h3{color:var(--xz-notify-heading-color, currentColor);font-size:125%;margin:0 0 .5em}:host([type="info"]){--xz-notify-heading-color: #4d4dff;--xz-notify-background-color: #f6f6ff}:host([type="success"]){--xz-notify-heading-color: #2ec946;--xz-notify-background-color: #f4fcf6}:host([type="warning"]){--xz-notify-heading-color: #ffba00;--xz-notify-background-color: #fffbf2}:host([type="error"]){--xz-notify-heading-color: #ff3838;--xz-notify-background-color: #fff5f5}';
+    this.#styleElem.textContent = ':host{--xz-notify-background-color: #f7f7f7;--xz-notify-heading-color: currentColor;--xz-notify-zIndex: auto;display:block;position:fixed;left:var(--xz-notify-left);top:var(--xz-notify-top);border-radius:0;border:0 solid;font-family:system-ui,-apple-system,Arial,sans-serif;font-size:16px;font-weight:400;line-height:normal;margin:.5em;padding:1.5em;width:fit-content;max-width:28em;min-width:18em;height:auto;z-index:var(--xz-notify-zIndex);animation:xz-notify-toggle .25s ease-in;background:var(--xz-notify-background-color) linear-gradient(to right,var(--xz-notify-heading-color) .25em,transparent 0);border-color:transparent;color:#666}:host([data-closing]){animation-direction:reverse;animation-iteration-count:2}@keyframes xz-notify-toggle{0%{opacity:0}to{opacity:1}}:host([closeable]){cursor:pointer}:host([closeable]:hover):after{content:"";display:block;width:100%;height:100%;background:rgba(0,0,0,.05);position:absolute;top:0;left:0;pointer-events:none}:host p{margin-top:0}:host a{color:currentColor}:host h3{color:var(--xz-notify-heading-color, currentColor);font-size:125%;margin:0 0 .5em}:host([type="info"]){--xz-notify-heading-color: #4d4dff;--xz-notify-background-color: #f6f6ff}:host([type="success"]){--xz-notify-heading-color: #2ec946;--xz-notify-background-color: #f4fcf6}:host([type="warning"]){--xz-notify-heading-color: #ffba00;--xz-notify-background-color: #fffbf2}:host([type="error"]){--xz-notify-heading-color: #ff3838;--xz-notify-background-color: #fff5f5}';
   }
 
   /**
@@ -310,8 +310,8 @@ class XZNotify extends HTMLElement {
         start = ts;
       }
       if (ts - start >= this.expire || this.#forcedClose) {
-        this.dataset.closing = '';
-        if (hasAnimation > 0) {
+        if (hasAnimation) {
+          this.dataset.closing = '1';
           this.style.animationPlayState = 'running';
         } else {
           this.#close();
@@ -331,6 +331,10 @@ class XZNotify extends HTMLElement {
    * Closes the notification.
    */
   #close() {
+    if (!this.dataset.closing) {
+      this.style.animationPlayState = 'paused';
+      return;
+    }
     this.dispatchEvent(this.constructor.events.CLOSE, this);
     this.remove();
   }
