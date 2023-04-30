@@ -1,4 +1,4 @@
-# XZ notify
+# XZ Notify
 
 XZNotify is a framework-agnostic web component to show floating notifications on the web-page.
 
