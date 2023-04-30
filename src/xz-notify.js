@@ -8,20 +8,23 @@
  * @author Dmitri Smirnov <https://www.whoop.ee/>
  * @license MIT 2023
  * @version {{VERSION}}
+ * @extends HTMLElement
  *
- * @property {string} [type="info"] Type of notification, like info, error,
- * warning, or success. See `XZNotify.types` for possible values.
- * @property {number} [expire=10000] How long the notification will be
- * displayed. If expire is zero or less, the notification will be closed
- * immediately. If the expiration value cannot be parsed into a number,
- * then default fallback is used.
- * @property {boolean} [closeable=false] If is set on the click on the
- * notification will close the notification.
- * @property {Positions} [position="ne"] Position of the notification.
- * @property {string} [heading] Heading of the notification. Creates an h3
+ * @property {string} [type="info"] Type of the notification. There are built-in
+ * types: default, info, success, warning and error.
+ * @property {number} [expire=10000] Time in milliseconds. How long the
+ * notification will be displayed. If expire is zero or less, the notification
+ * will be closed immediately. If the expiration value cannot be parsed into a
+ * number then the default fallback is used.
+ * @property {boolean} [closeable=false] If it is set, clicking on the
+ * notification will close it.
+ * @property {Positions} [position="ne"] Position of the notification on the
+ * screen. Position corresponds to a point of compass: n (north),
+ * ne (north-east), s (south), etc.
+ * @property {string} [heading] The heading of the notification. Creates h3
  * element inside the notification.
- * @property {boolean} [grouped=false] If grouped is set then offset position
- * is not recalculated and notifications are stacked.
+ * @property {boolean} [grouped=false] If grouped is set, then the offset
+ * position is not recalculated and notifications are stacked.
  *
  * @fires XZNotify#open
  * @fires XZNotify#close
@@ -101,13 +104,7 @@ class XZNotify extends HTMLElement {
   };
 
   /**
-   * @type {{
-   *   EXPIRE: number,
-   *   TYPE: string,
-   *   POSITION: string,
-   *   CLOSEABLE: boolean,
-   *   GROUPED: false
-   * }}
+   * @type {Defaults}
    */
   static defaults = {
     EXPIRE:    10000,
@@ -120,20 +117,17 @@ class XZNotify extends HTMLElement {
   /**
    * Creates a new XZNotify element. Recommended to use when creating
    * notifications.
-   * @param {string} content
-   * @param {Object<string, string>} attrs
-   * @param {boolean} trusted
+   * @param {string} content - Content of the notification.
+   * @param {Object<string, string>} [attrs={}] - Attributes of the
+   * `<xz-notify>` element.
+   * @param {boolean} [trusted=false] - If `true` then HTML is allowed in
+   * content. Might not be safe for XSS.
    * @return {XZNotify}
    */
   static create = (content, attrs = {}, trusted = false) => {
     const elem = document.createElement(this.TAG_NAME);
     Object.entries(attrs).forEach(([k, v]) => elem.setAttribute(k, v));
-
-    if (!trusted) {
-      elem.innerText = content;
-    } else {
-      elem.innerHTML = content;
-    }
+    elem[trusted ? 'innerHTML' : 'textContent'] = content;
     return elem;
   };
 
@@ -208,10 +202,10 @@ class XZNotify extends HTMLElement {
   #calcOffsetPosition(i) {
     const rect = this.getBoundingClientRect();
     const styles = getComputedStyle(this);
-    const mt = parseInt(styles.getPropertyValue('margin-top'));
-    const mr = parseInt(styles.getPropertyValue('margin-right'));
-    const mb = parseInt(styles.getPropertyValue('margin-bottom'));
-    const ml = parseInt(styles.getPropertyValue('margin-left'));
+    const mt = Number.parseInt(styles.getPropertyValue('margin-top'));
+    const mr = Number.parseInt(styles.getPropertyValue('margin-right'));
+    const mb = Number.parseInt(styles.getPropertyValue('margin-bottom'));
+    const ml = Number.parseInt(styles.getPropertyValue('margin-left'));
     switch (this.position) {
       case XZNotify.position.N:
         return [rect.width/2, i*(rect.height + mt)];
@@ -302,7 +296,7 @@ class XZNotify extends HTMLElement {
    * done in render() or connectedCallback().
    */
   #hydrate() {
-    const hasAnimation = parseFloat(
+    const hasAnimation = Number.parseFloat(
         window.getComputedStyle(this).getPropertyValue('animation-duration'),
     ) > 0;
     this.#setPosition();
@@ -389,4 +383,13 @@ export default XZNotify;
  * @typedef Events
  * @property {CustomEvent} OPEN
  * @property {CustomEvent} CLOSE
+ */
+
+/**
+ * @typedef Defaults
+ * @property {number} EXPIRE
+ * @property {string} TYPE
+ * @property {string} POSITION
+ * @property {boolean} CLOSEABLE
+ * @property {boolean} GROUPED
  */
