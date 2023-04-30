@@ -7,7 +7,7 @@
  *
  * @author Dmitri Smirnov <https://www.whoop.ee/>
  * @license MIT 2023
- * @version 1.0.0
+ * @version 1.0.1
  * @extends HTMLElement
  *
  * @property {string} [type="info"] Type of the notification. There are built-in
