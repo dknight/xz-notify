@@ -166,7 +166,7 @@ describe('Should test', () => {
         expire: 1, // 1ms
       });
       document.body.appendChild(component);
-      expect(component.dataset.closing).toBe('');
+      expect(component.dataset.closing).toBe('true');
       component.remove();
     });
 
@@ -178,7 +178,7 @@ describe('Should test', () => {
       document.body.appendChild(component);
       component.dispatchEvent(new MouseEvent('click'));
       component.click();
-      expect(component.dataset.closing).toBe('');
+      expect(component.dataset.closing).toBe('true');
       component.remove();
     });
 
