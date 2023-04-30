@@ -7,7 +7,7 @@
     "test": "npx jest --env=@happy-dom/jest-environment",
     "test:coverage": "npx jest --env=@happy-dom/jest-environment --collect-coverage",
     "lint": "npx eslint {src/,__tests__}/**/*.js",
-    "build": "npm run lint && npm test && ./build.sh",
+    "build": "./build.sh",
     "watch": "npx watch ./build.sh src"
   },
   "type": "module",
