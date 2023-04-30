@@ -7,7 +7,7 @@
  *
  * @author Dmitri Smirnov <https://www.whoop.ee/>
  * @license MIT 2023
- * @version 0.0.0
+ * @version 1.0.0
  * @extends HTMLElement
  *
  * @property {string} [type="info"] Type of the notification. There are built-in
@@ -310,8 +310,8 @@ class XZNotify extends HTMLElement {
         start = ts;
       }
       if (ts - start >= this.expire || this.#forcedClose) {
+        this.dataset.closing = true;
         if (hasAnimation) {
-          this.dataset.closing = '1';
           this.style.animationPlayState = 'running';
         } else {
           this.#close();
