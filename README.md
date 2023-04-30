@@ -1,5 +1,7 @@
 # XZ Notify
 
+[![Build](https://github.com/dknight/xz-notify/actions/workflows/tests.yml/badge.svg)](https://github.com/dknight/xz-notify/actions/workflows/tests.yml)
+
 XZNotify is a framework-agnostic web component to show floating notifications on the web-page.
 
 Check out the [demo page](https://www.whoop.ee/xz-notify/demo) for more examples.
