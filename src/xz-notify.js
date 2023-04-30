@@ -126,7 +126,12 @@ class XZNotify extends HTMLElement {
    */
   static create = (content, attrs = {}, trusted = false) => {
     const elem = document.createElement(this.TAG_NAME);
-    Object.entries(attrs).forEach(([k, v]) => elem.setAttribute(k, v));
+    Object.entries(attrs).forEach(([k, v]) => {
+      if (v === false || v === null) {
+        return;
+      }
+      elem.setAttribute(k, v);
+    });
     elem[trusted ? 'innerHTML' : 'textContent'] = content;
     return elem;
   };
@@ -277,7 +282,6 @@ class XZNotify extends HTMLElement {
   #render() {
     this.root.append(this.#styleElem);
     this.heading && this.root.appendChild(this.#buildHeading());
-    // TODO try to think out better solution, maybe slots?
     this.root.append(...this.childNodes);
   }
 
