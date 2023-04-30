@@ -95,6 +95,16 @@ describe('Should test', () => {
     });
   });
 
+  it('should not reflect falsy properties', () => {
+    component = XZNotify.create('Hello world!', {
+      closeable: false,
+      grouped:   false,
+    });
+    document.body.appendChild(component);
+    expect(component.hasAttribute('closeable')).toBe(false);
+    expect(component.hasAttribute('grouped')).toBe(false);
+  });
+
   it('should have default styles', () => {
     component = XZNotify.create('Hello world!');
     document.body.appendChild(component);

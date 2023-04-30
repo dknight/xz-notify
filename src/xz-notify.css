@@ -8,7 +8,7 @@
   left: var(--xz-notify-left);
   top: var(--xz-notify-top);
   border-radius: 0;
-  border: 1px solid;
+  border: 0 solid;
   font-family: system-ui, -apple-system, Arial, sans-serif;
   font-size: 16px;
   font-weight: normal;

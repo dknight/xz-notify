@@ -21,28 +21,32 @@ __export(xz_notify_exports, {
 });
 module.exports = __toCommonJS(xz_notify_exports);
 /**
- * XZNotify is a framework agnostic web component to show floating
- * notifications. The component uses (first-in-first-out) queue
- * data structure, new notifications automatically appended to the end of the
- * queue. Also each appended component automatically computes it's own position.
+ * XZNotify is a framework-agnostic web component to show floating
+ * notifications. The component uses a first-in, first-out queue.data structure,
+ * new notifications are automatically appended to the end of the queue.
+ * Also, each appended component automatically computes its own position.
  * More details on https://www.github.com/dknight/xz-notify
  *
  * @author Dmitri Smirnov <https://www.whoop.ee/>
  * @license MIT 2023
  * @version 0.0.0
+ * @extends HTMLElement
  *
- * @property {string} [type="info"] Type of the notification, like info,
- * error, warning, success. See `XZNotify.types` for possible values.
- * @property {number} [expire=10000] How long notification will be displayed.
- * If expire is zero or less, notification will be closed immediately.
- * @property {boolean} [closeable=false] If is set on the click on the
- * notification will close the notification.
- * @property {string} [position="ne"] Position of the notification. See
- * `XZNotify.position` for possible values.
- * @property {string} [heading] Heading of the notification. Creates h3 element
- * inside the notification.
- * @property {boolean} [grouped=false] If grouped is set then offset position
- * is not recalculated and notifications are stacked.
+ * @property {string} [type="info"] Type of the notification. There are built-in
+ * types: default, info, success, warning and error.
+ * @property {number} [expire=10000] Time in milliseconds. How long the
+ * notification will be displayed. If expire is zero or less, the notification
+ * will be closed immediately. If the expiration value cannot be parsed into a
+ * number then the default fallback is used.
+ * @property {boolean} [closeable=false] If it is set, clicking on the
+ * notification will close it.
+ * @property {Positions} [position="ne"] Position of the notification on the
+ * screen. Position corresponds to a point of compass: n (north),
+ * ne (north-east), s (south), etc.
+ * @property {string} [heading] The heading of the notification. Creates h3
+ * element inside the notification.
+ * @property {boolean} [grouped=false] If grouped is set, then the offset
+ * position is not recalculated and notifications are stacked.
  *
  * @fires XZNotify#open
  * @fires XZNotify#close
@@ -64,20 +68,14 @@ class XZNotify extends HTMLElement {
    */
   static TAG_NAME = "xz-notify";
   /**
-   * Observed attributes if required. usually notification's life is very short
-   * and no point to observe attributes.
-   * @type {Array<string>}
+   * Observed attributes if required. Usually, a notification's life is very
+   * short, and there is no point in observing attributes.
+   * @type {string[]}
    */
   static observedAttributes = [];
   /**
    * Notification's possible types.
-   * @type {{
-   *  DEFAULT: string,
-   *  INFO: string,
-   *  WARNING: string,
-   *  SUCCESS: string,
-   *  ERROR: string
-   * }}
+   * @type {Types}
    */
   static types = {
     INFO: "info",
@@ -87,7 +85,7 @@ class XZNotify extends HTMLElement {
   };
   /**
    * Events for the component.
-   * @type {{OPEN: CustomEvent, CLOSE: CustomEvent}}
+   * @type {Events}
    */
   static events = {
     OPEN: new CustomEvent("xz-notify:open", { bubbles: true }),
@@ -95,7 +93,7 @@ class XZNotify extends HTMLElement {
   };
   /**
    * Positioning constants.
-   * @enum {Object<string, string>}
+   * @type {Positions}
    */
   static position = {
     N: "n",
@@ -109,7 +107,7 @@ class XZNotify extends HTMLElement {
   };
   /**
    * Contains currently opened notifications.
-   * @type {Object<string, Array<XZNotify>>}
+   * @type {Object<Position, XZNotify[]>}
    */
   static collection = {
     [this.position.N]: [],
@@ -122,14 +120,7 @@ class XZNotify extends HTMLElement {
     [this.position.NW]: []
   };
   /**
-   * Defaults for the component.
-   * @type {{
-   *   EXPIRE: number,
-   *   TYPE: string,
-   *   POSITION: string,
-   *   CLOSEABLE: boolean,
-   *   GROUPED: false
-   * }}
+   * @type {Defaults}
    */
   static defaults = {
     EXPIRE: 1e4,
@@ -141,32 +132,35 @@ class XZNotify extends HTMLElement {
   /**
    * Creates a new XZNotify element. Recommended to use when creating
    * notifications.
-   * @param {string} content
-   * @param {Object<string, string>} attrs
-   * @param {boolean} trusted
+   * @param {string} content - Content of the notification.
+   * @param {Object<string, string>} [attrs={}] - Attributes of the
+   * `<xz-notify>` element.
+   * @param {boolean} [trusted=false] - If `true` then HTML is allowed in
+   * content. Might not be safe for XSS.
    * @return {XZNotify}
    */
   static create = (content, attrs = {}, trusted = false) => {
     const elem = document.createElement(this.TAG_NAME);
-    Object.entries(attrs).forEach(([k, v]) => elem.setAttribute(k, v));
-    if (!trusted) {
-      elem.innerText = content;
-    } else {
-      elem.innerHTML = content;
-    }
+    Object.entries(attrs).forEach(([k, v]) => {
+      if (v === false || v === null) {
+        return;
+      }
+      elem.setAttribute(k, v);
+    });
+    elem[trusted ? "innerHTML" : "textContent"] = content;
     return elem;
   };
   // Private vars here please...
   #styleElem = document.createElement("style");
   #forcedClose = false;
   /**
-   * Constructor is always called before instance of notification is connected
-   * to DOM.
+   * Constructor is always called before an instance of notification is
+   * connected to the DOM.
    */
   constructor() {
     super();
     this.root = this.attachShadow({ mode: "open" });
-    this.#styleElem.textContent = ':host{--xz-notify-background-color: #f7f7f7;--xz-notify-heading-color: currentColor;--xz-notify-zIndex: auto;display:block;position:fixed;left:var(--xz-notify-left);top:var(--xz-notify-top);border-radius:0;border:1px solid;font-family:system-ui,-apple-system,Arial,sans-serif;font-size:16px;font-weight:400;line-height:normal;margin:.5em;padding:1.5em;width:fit-content;max-width:28em;min-width:18em;height:auto;z-index:var(--xz-notify-zIndex);animation:xz-notify-close .4s ease-in 1;animation-play-state:paused;background:var(--xz-notify-background-color) linear-gradient(to right,var(--xz-notify-heading-color) .25em,transparent 0);border-color:transparent;color:#666}@keyframes xz-notify-close{to{opacity:0}}:host([closeable]){cursor:pointer}:host([closeable]:hover):after{content:"";display:block;width:100%;height:100%;background:rgba(0,0,0,.05);position:absolute;top:0;left:0;pointer-events:none}:host p{margin-top:0}:host a{color:currentColor}:host h3{color:var(--xz-notify-heading-color, currentColor);font-size:125%;margin:0 0 .5em}:host([type="info"]){--xz-notify-heading-color: #4d4dff;--xz-notify-background-color: #f6f6ff}:host([type="success"]){--xz-notify-heading-color: #2ec946;--xz-notify-background-color: #f4fcf6}:host([type="warning"]){--xz-notify-heading-color: #ffba00;--xz-notify-background-color: #fffbf2}:host([type="error"]){--xz-notify-heading-color: #ff3838;--xz-notify-background-color: #fff5f5}';
+    this.#styleElem.textContent = ':host{--xz-notify-background-color: #f7f7f7;--xz-notify-heading-color: currentColor;--xz-notify-zIndex: auto;display:block;position:fixed;left:var(--xz-notify-left);top:var(--xz-notify-top);border-radius:0;border:0 solid;font-family:system-ui,-apple-system,Arial,sans-serif;font-size:16px;font-weight:400;line-height:normal;margin:.5em;padding:1.5em;width:fit-content;max-width:28em;min-width:18em;height:auto;z-index:var(--xz-notify-zIndex);animation:xz-notify-close .4s ease-in 1;animation-play-state:paused;background:var(--xz-notify-background-color) linear-gradient(to right,var(--xz-notify-heading-color) .25em,transparent 0);border-color:transparent;color:#666}@keyframes xz-notify-close{to{opacity:0}}:host([closeable]){cursor:pointer}:host([closeable]:hover):after{content:"";display:block;width:100%;height:100%;background:rgba(0,0,0,.05);position:absolute;top:0;left:0;pointer-events:none}:host p{margin-top:0}:host a{color:currentColor}:host h3{color:var(--xz-notify-heading-color, currentColor);font-size:125%;margin:0 0 .5em}:host([type="info"]){--xz-notify-heading-color: #4d4dff;--xz-notify-background-color: #f6f6ff}:host([type="success"]){--xz-notify-heading-color: #2ec946;--xz-notify-background-color: #f4fcf6}:host([type="warning"]){--xz-notify-heading-color: #ffba00;--xz-notify-background-color: #fffbf2}:host([type="error"]){--xz-notify-heading-color: #ff3838;--xz-notify-background-color: #fff5f5}';
   }
   /**
    * Calculates and sets the position of the notification.
@@ -183,7 +177,7 @@ class XZNotify extends HTMLElement {
     }
   }
   /**
-   * Gets the index in collection.
+   * Gets the index of the current notification in collection.
    * @return {number}
    */
   #findIndex() {
@@ -191,7 +185,7 @@ class XZNotify extends HTMLElement {
   }
   /**
    * Calculates base position.
-   * @return {Array<number>}
+   * @return {number[]}
    */
   #calcBasePosition() {
     switch (this.position) {
@@ -217,15 +211,15 @@ class XZNotify extends HTMLElement {
   /**
    * Calculates offset position.
    * @param {number} i
-   * @return {Array<number>}
+   * @return {number[]}
    */
   #calcOffsetPosition(i) {
     const rect = this.getBoundingClientRect();
     const styles = getComputedStyle(this);
-    const mt = parseInt(styles.getPropertyValue("margin-top"));
-    const mr = parseInt(styles.getPropertyValue("margin-right"));
-    const mb = parseInt(styles.getPropertyValue("margin-bottom"));
-    const ml = parseInt(styles.getPropertyValue("margin-left"));
+    const mt = Number.parseInt(styles.getPropertyValue("margin-top"));
+    const mr = Number.parseInt(styles.getPropertyValue("margin-right"));
+    const mb = Number.parseInt(styles.getPropertyValue("margin-bottom"));
+    const ml = Number.parseInt(styles.getPropertyValue("margin-left"));
     switch (this.position) {
       case XZNotify.position.N:
         return [rect.width / 2, i * (rect.height + mt)];
@@ -271,11 +265,16 @@ class XZNotify extends HTMLElement {
   #reflectToProperties() {
     this.type = (this.getAttribute("type") || this.constructor.defaults.TYPE).toLowerCase();
     this.position = (this.getAttribute("position") || this.constructor.position.NE).toLowerCase();
-    this.expire = Number(this.getAttribute("expire"));
-    if (this.expire === 0) {
-      this.expire = 0;
-    } else if (!this.expire) {
+    this.expire = this.getAttribute("expire");
+    if (this.expire === null) {
       this.expire = this.constructor.defaults.EXPIRE;
+    } else if (this.expire === "0") {
+      this.expire = 0;
+    } else {
+      this.expire = Number(this.expire);
+      if (Number.isNaN(this.expire)) {
+        this.expire = this.constructor.defaults.EXPIRE;
+      }
     }
     this.closeable = this.hasAttribute("closeable");
     this.heading = this.getAttribute("heading");
@@ -299,11 +298,11 @@ class XZNotify extends HTMLElement {
     return h;
   }
   /**
-   * Added all interactivity here for potential SSR.
-   * But actually can be done in render() or connectedCallback().
+   * Added all interactivity here for potential SSR. But it can actually be
+   * done in render() or connectedCallback().
    */
   #hydrate() {
-    const hasAnimation = parseFloat(
+    const hasAnimation = Number.parseFloat(
       window.getComputedStyle(this).getPropertyValue("animation-duration")
     ) > 0;
     this.#setPosition();
