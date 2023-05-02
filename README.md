@@ -24,13 +24,13 @@ You can create as many notifications as you want. These will be automatically po
 
 XZNotify is a module. First of all, you need to include it in your project. At the moment, there are two ways to do it:
 
-#### script tag way
+### script tag way
 
 ```html
 <script type="module" src="./xz-notify.js"></script>
 ```
 
-#### import way
+### import way
 
 ```js
 import XZNotify from 'xz-notify';
@@ -61,7 +61,7 @@ document.body.appendChild(notification);
 
 ## API
 
-##### XZNotify
+### XZNotify
 
 Class has some properties that are reflected in HTML attributes.
 
@@ -74,7 +74,7 @@ Class has some properties that are reflected in HTML attributes.
 | grouped   | boolean  | false     | If grouped is set, then the offset position is not recalculated and notifications are stacked. |
 | heading   | string   | null      | The heading of the notification. |
 
-##### create(content, attributes?, trusted?)
+### create(content, attributes?, trusted?)
 
 Method to create XZNotify instance.
 
@@ -84,7 +84,7 @@ Method to create XZNotify instance.
 | attributes | Object   | {}      | Attributes of the `<xz-notify>` element. |
 | trusted    | boolean  | false   | If `true` then HTML is allowed in content. Might not be safe for XSS. |
 
-##### Events
+### Events
 
 Notification dispatches custom events on the open state and when expired.
 
@@ -98,6 +98,14 @@ document.body.addEventListener('xz-notify:open', (e) => console.log(e));
 document.body.addEventListener('xz-notify:close', (e) => console.log(e));
 ```
 
+### Collection
+
+XZNotify class has static `collection` variable which contains currently opened and live notifications.
+
+```js
+XZNotify.collection // -> NodeList<XZNotify>
+XZNotify.collection.length // 0 - means that none of live notifications exist
+```
 
 ## Styling
 
