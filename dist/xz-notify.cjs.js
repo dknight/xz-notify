@@ -287,6 +287,7 @@ class XZNotify extends HTMLElement {
     this.root.append(this.#styleElem);
     this.heading && this.root.appendChild(this.#buildHeading());
     this.root.append(...this.childNodes);
+    this.setAttribute("role", "alert");
   }
   /**
    * Builds heading <h3> element.

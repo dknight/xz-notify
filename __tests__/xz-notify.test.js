@@ -192,4 +192,11 @@ describe('Should test', () => {
       component.click();
     });
   });
+
+  describe('A11y', () => {
+    it('should have role=alert', () => {
+      document.body.appendChild(component);
+      expect(component.getAttribute('role')).toBe('alert');
+    });
+  });
 });
