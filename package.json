@@ -1,6 +1,6 @@
 {
   "name": "xz-notify",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Notifications based on web components.",
   "main": "index.js",
   "scripts": {
