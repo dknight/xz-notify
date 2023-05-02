@@ -30,6 +30,17 @@ XZNotify is a module. First of all, you need to include it in your project. At t
 <script type="module" src="./xz-notify.js"></script>
 ```
 
+#### CDN
+
+Just include link from CDN and you are ready to go.
+
+```html
+<!-- preferably in <head> -->
+<script src="https://unpkg.com/xz-notify@1.1.0/dist/xz-notify.min.js" type="module"></script>
+<!-- inside <body> -->
+<xz-notify expire="150000">Hello world!</xz-notify>
+```
+
 ### import way
 
 ```js
