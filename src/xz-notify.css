@@ -52,7 +52,7 @@
 }
 :host p {margin-top: 0}
 :host a {color: currentColor}
-:host h3 {
+:host .heading {
   color: var(--xz-notify-heading-color, currentColor);
   font-size: 125%;
   margin: 0 0 .5em;

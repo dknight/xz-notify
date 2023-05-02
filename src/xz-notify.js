@@ -292,6 +292,7 @@ class XZNotify extends HTMLElement {
   #buildHeading() {
     const h = document.createElement('h3');
     h.innerText = this.heading;
+    h.classList.add('heading');
     return h;
   }
 
