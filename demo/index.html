@@ -105,6 +105,10 @@
             <label for="expire">Content</label>
             <textarea id="content"
               rows="4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, quidem!</textarea>
+            <label>
+              Trusted
+              <input type="checkbox" id="trusted">
+            </label>
           </p>
         </div>
         <div>
@@ -137,6 +141,7 @@
         const grouped = document.getElementById('grouped').checked;
         const heading = document.getElementById('heading').value;
         const content = document.getElementById('content').value;
+        const trusted = document.getElementById('trusted').checked;
         const ntf = XZNotify.create(content, {
           type,
           expire,
@@ -144,7 +149,7 @@
           closeable,
           grouped,
           heading,
-        }, true);
+        }, trusted);
         document.body.appendChild(ntf);
 
         const theme = document.getElementById('theme');
