@@ -29,7 +29,7 @@ module.exports = __toCommonJS(xz_notify_exports);
  *
  * @author Dmitri Smirnov <https://www.whoop.ee/>
  * @license MIT 2023
- * @version 1.0.3
+ * @version 1.0.4
  * @extends HTMLElement
  *
  * @property {string} [type="info"] Type of the notification. There are built-in
