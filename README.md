@@ -2,7 +2,7 @@
 
 [![License MIT](https://img.shields.io/npm/l/xz-notify)](https://github.com/dknight/xz-notify/blob/main/LICENSE)
 [![Build](https://github.com/dknight/xz-notify/actions/workflows/node.js.yml/badge.svg)](https://github.com/dknight/xz-notify/actions/workflows/node.js.yml)
-![Version](https://img.shields.io/npm/v/xz-notify)
+[![Version](https://img.shields.io/npm/v/xz-notify)](https://www.npmjs.com/package/xz-notify)
 
 XZNotify is a framework-agnostic web component to show floating notifications on the web-page.
 
@@ -36,7 +36,10 @@ Just include link from CDN and you are ready to go.
 
 ```html
 <!-- preferably in <head> -->
-<script src="https://unpkg.com/xz-notify@latest/dist/xz-notify.min.js" type="module"></script>
+<script
+  src="https://unpkg.com/xz-notify@latest/dist/xz-notify.min.js"
+  type="module"
+></script>
 <!-- inside <body> -->
 <xz-notify expire="150000">Hello world!</xz-notify>
 ```
@@ -54,9 +57,7 @@ After being added, there will be a custom HTML element `<xz-notify>` defined in 
 The notification can be inserted directly into your HTML, and it will be destroyed as soon as it expires.
 
 ```html
-<xz-notify type="info" expire="10000" position="ne">
-  Hello world!
-</xz-notify>
+<xz-notify type="info" expire="10000" position="ne"> Hello world! </xz-notify>
 ```
 
 Another way is to make it programmatically and append it to any element, but `<body>` or something like `<main>` is recommended.
@@ -76,31 +77,31 @@ document.body.appendChild(notification);
 
 Class has some properties that are reflected in HTML attributes.
 
-| name      | type     | default   | description.
-|-----------|----------|-----------|-----|
-| expire    | number   | 10000     | Time in milliseconds. How long the notification will be displayed. If expire is zero or less, the notification will be closed immediately. If the expiration value cannot be parsed into a number, then the default fallback is used. |
-| type      | string   | "default" | Type of the notification. There are built-in types: default, info, success, warning, and error. |
-| position  | string   | "ne"      | Position of the notification o the screen. Position corresponds to point of compass: n (north), ne (north-east), s (south), etc. |
-| closeable | boolean  | false     | If it is set, clicking on the notification will close it. |
-| grouped   | boolean  | false     | If grouped is set, then the offset position is not recalculated and notifications are stacked. |
-| heading   | string   | null      | The heading of the notification. |
+| name      | type    | default   | description.                                                                                                                                                                                                                          |
+| --------- | ------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| expire    | number  | 10000     | Time in milliseconds. How long the notification will be displayed. If expire is zero or less, the notification will be closed immediately. If the expiration value cannot be parsed into a number, then the default fallback is used. |
+| type      | string  | "default" | Type of the notification. There are built-in types: default, info, success, warning, and error.                                                                                                                                       |
+| position  | string  | "ne"      | Position of the notification o the screen. Position corresponds to point of compass: n (north), ne (north-east), s (south), etc.                                                                                                      |
+| closeable | boolean | false     | If it is set, clicking on the notification will close it.                                                                                                                                                                             |
+| grouped   | boolean | false     | If grouped is set, then the offset position is not recalculated and notifications are stacked.                                                                                                                                        |
+| heading   | string  | null      | The heading of the notification.                                                                                                                                                                                                      |
 
 ### create(content, attributes?, trusted?)
 
 Method to create XZNotify instance.
 
-| name       | type     | default | description |
-|------------|----------|---------|-------------|
-| content    | string   |         | Content of the notification. |
-| attributes | Object   | {}      | Attributes of the `<xz-notify>` element. |
-| trusted    | boolean  | false   | If `true` then HTML is allowed in content. Might not be safe for XSS. |
+| name       | type    | default | description                                                           |
+| ---------- | ------- | ------- | --------------------------------------------------------------------- |
+| content    | string  |         | Content of the notification.                                          |
+| attributes | Object  | {}      | Attributes of the `<xz-notify>` element.                              |
+| trusted    | boolean | false   | If `true` then HTML is allowed in content. Might not be safe for XSS. |
 
 ### Events
 
 Notification dispatches custom events on the open state and when expired.
 
 | event name      | detail   |
-|-----------------|----------|
+| --------------- | -------- |
 | xz-notify:open  | XZNotify |
 | xz-notify:close | XZNotify |
 
@@ -114,8 +115,8 @@ document.body.addEventListener('xz-notify:close', (e) => console.log(e));
 XZNotify class has static `collection` variable which contains currently opened and live notifications.
 
 ```js
-XZNotify.collection // -> NodeList<XZNotify>
-XZNotify.collection.length // 0 - means that none of live notifications exist
+XZNotify.collection; // -> NodeList<XZNotify>
+XZNotify.collection.length; // 0 - means that none of live notifications exist
 ```
 
 ## Styling
@@ -130,29 +131,29 @@ xz-notify {
   /* etc... */
 }
 ```
+
 ### Custom properties
 
-XZNotify exposes some useful CSS custom properties. Most likely, you won't change them manually. 
+XZNotify exposes some useful CSS custom properties. Most likely, you won't change them manually.
 
-* `--xz-notify-heading-color`
-* `--xz-notify-zIndex` 
-* `--xz-notify-background-color`
-
+- `--xz-notify-heading-color`
+- `--xz-notify-zIndex`
+- `--xz-notify-background-color`
 
 ### Themes
 
 Include the theme in the HTML file:
 
 ```html
-<link rel="stylesheet" href="bootstrap.css">
+<link rel="stylesheet" href="bootstrap.css" />
 ```
 
 At the moment, there are some built-in themes. More themes will be added in future.
 
-* default
-* bootstrap
-* simple
-* bar
+- default
+- bootstrap
+- simple
+- bar
 
 ## Contribution
 
