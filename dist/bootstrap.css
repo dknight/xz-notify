@@ -1,0 +1,32 @@
+/* Theme for xz-notify which looks like Bootstrap 5 */
+xz-notify {
+  --xz-notify-title-color: currentColor;
+
+  padding: 1em;
+  border-radius: .25em;
+  border-width: 1px;
+
+  background: #cfe2ff;
+  border-color: #b6d4fe;
+  color: #084298;
+}
+xz-notify[type="success"] {
+  background: #d1e7dd;
+  border-color: #badbcc;
+  color: #0f5132;
+}
+xz-notify[type="info"] {
+  background: #cff4fc;
+  border-color: #b6effb;
+  color: #055160;
+}
+xz-notify[type="warning"] {
+  background: #fff3cd;
+  border-color: #ffecb5;
+  color: #664d03;
+}
+xz-notify[type="error"] {
+  background: #f8d7da;
+  border-color: #f5c2c7;
+  color: #842029;
+}

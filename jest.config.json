@@ -1,6 +1,6 @@
 {
   "verbose": false,
-  "transform": {"\\.js$": "babel-jest"},
+  "transform": {"\\.ts$": "ts-jest"},
   "testEnvironment": "@happy-dom/jest-environment",
   "testEnvironmentOptions": {
     "url": "http://localhost:4000/"

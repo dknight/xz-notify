@@ -1,12 +1,11 @@
 {
   "name": "xz-notify",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "Notifications based on web components.",
-  "main": "index.js",
+  "main": "src/xz-notify.ts",
   "scripts": {
     "test": "npx jest --env=@happy-dom/jest-environment",
     "test:coverage": "npx jest --env=@happy-dom/jest-environment --collect-coverage",
-    "lint": "npx eslint {src/,__tests__}/**/*.js",
     "build": "./build.sh",
     "watch": "npx watch ./build.sh src"
   },
@@ -30,13 +29,11 @@
   },
   "homepage": "https://github.com/dknight/xz-notify#readme",
   "devDependencies": {
-    "@babel/preset-env": "^7.21.4",
     "@happy-dom/jest-environment": "^9.9.2",
-    "babel-jest": "^29.5.0",
+    "@jest/globals": "^29.5.0",
     "esbuild": "^0.17.18",
-    "eslint": "^8.39.0",
-    "eslint-config-google": "^0.14.0",
     "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
     "watch": "^0.13.0"
   }
 }

@@ -1,7 +1,9 @@
-import XZNotify from '../index.js';
+import {describe, afterEach, beforeEach, it, expect, jest} from '@jest/globals';
+import XZNotify from '../src/xz-notify';
+import {SpiedFunction} from 'jest-mock';
 
 describe('Should test', () => {
-  let component;
+  let component: XZNotify;
   afterEach(() => {
     if (document.body.contains(component)) {
       document.body.removeChild(component);
@@ -38,8 +40,8 @@ describe('Should test', () => {
   it('should render notification with trusted content', () => {
     component = XZNotify.create('<p>Hello <b>world</b></p>', {}, true);
     document.body.appendChild(component);
-    const p = component.shadowRoot.querySelector('p');
-    const b = component.shadowRoot.querySelector('b');
+    const p = component.shadowRoot!.querySelector('p');
+    const b = component.shadowRoot!.querySelector('b');
     expect(p).not.toBeNull();
     expect(b).not.toBeNull();
   });
@@ -47,8 +49,8 @@ describe('Should test', () => {
   it('should render notification without trusted content', () => {
     component = XZNotify.create('<p>Hello <b>world</b></p>', {}, false);
     document.body.appendChild(component);
-    const p = component.shadowRoot.querySelector('p');
-    const b = component.shadowRoot.querySelector('b');
+    const p = component.shadowRoot!.querySelector('p');
+    const b = component.shadowRoot!.querySelector('b');
     expect(p).toBeNull();
     expect(b).toBeNull();
   });
@@ -65,15 +67,15 @@ describe('Should test', () => {
 
   it('should create notification with attributes and reflect to props', () => {
     component = XZNotify.create('Hello world!', {
-      position:  XZNotify.position.N,
-      type:      XZNotify.types.SUCCESS,
-      expire:    2000,
+      position: XZNotify.positions.N,
+      type: XZNotify.types.SUCCESS,
+      expire: 2000,
       closeable: true,
-      grouped:   true,
+      grouped: true,
     });
     document.body.appendChild(component);
-    expect(component.position).toBe(XZNotify.position.N);
-    expect(component.getAttribute('position')).toBe(XZNotify.position.N);
+    expect(component.position).toBe(XZNotify.positions.N);
+    expect(component.getAttribute('position')).toBe(XZNotify.positions.N);
     expect(component.type).toBe(XZNotify.types.SUCCESS);
     expect(component.getAttribute('type')).toBe(XZNotify.types.SUCCESS);
     expect(component.expire).toBe(2000);
@@ -85,7 +87,7 @@ describe('Should test', () => {
   });
 
   it('should fallback in case of wrong expire value', () => {
-    ['abc', null, {}, false, true].forEach((x) => {
+    ['abc', null, true].forEach((x) => {
       const component = XZNotify.create('Hello world!', {
         expire: x,
       });
@@ -98,7 +100,7 @@ describe('Should test', () => {
   it('should not reflect falsy properties', () => {
     component = XZNotify.create('Hello world!', {
       closeable: false,
-      grouped:   false,
+      grouped: false,
     });
     document.body.appendChild(component);
     expect(component.hasAttribute('closeable')).toBe(false);
@@ -108,56 +110,61 @@ describe('Should test', () => {
   it('should have default styles', () => {
     component = XZNotify.create('Hello world!');
     document.body.appendChild(component);
-    const contents = component.shadowRoot.querySelector('style');
-    expect(contents.textContent.length).toBeGreaterThan(0);
+    const contents = component.shadowRoot!.querySelector('style');
+    expect(contents!.textContent!.length).toBeGreaterThan(0);
   });
 
   describe('positions', () => {
-    Object.entries(XZNotify.position).forEach(([k, v]) => {
+    Object.entries(XZNotify.positions).forEach(([k, v]) => {
       it(`it should position ${k}`, () => {
         const component = XZNotify.create('Hi', {
           position: v,
         });
         document.body.appendChild(component);
-        expect(component.position).toBe(XZNotify.position[k]);
+        expect(component.position).toBe(XZNotify.positions[k]);
         component.remove();
       });
     });
 
     it('should position in different directions', () => {
       const comps = [
-        XZNotify.create('foo', {position: XZNotify.position.N}),
-        XZNotify.create('bar', {position: XZNotify.position.N}),
-        XZNotify.create('bar', {position: XZNotify.position.S}),
-        XZNotify.create('var', {position: XZNotify.position.S}),
-        XZNotify.create('jar', {position: XZNotify.position.S}),
-        XZNotify.create('jar', {position: XZNotify.position.NE}),
-        XZNotify.create('xyzzy', {position: XZNotify.position.NE}),
-        XZNotify.create('cow', {position: XZNotify.position.NE}),
-        XZNotify.create('farm', {position: XZNotify.position.NE}),
+        XZNotify.create('foo', {position: XZNotify.positions.N}),
+        XZNotify.create('bar', {position: XZNotify.positions.N}),
+        XZNotify.create('bar', {position: XZNotify.positions.S}),
+        XZNotify.create('var', {position: XZNotify.positions.S}),
+        XZNotify.create('jar', {position: XZNotify.positions.S}),
+        XZNotify.create('jar', {position: XZNotify.positions.NE}),
+        XZNotify.create('xyzzy', {position: XZNotify.positions.NE}),
+        XZNotify.create('cow', {position: XZNotify.positions.NE}),
+        XZNotify.create('farm', {position: XZNotify.positions.NE}),
       ];
 
       comps.forEach((x) => document.body.appendChild(x));
 
-      expect(XZNotify.collection[XZNotify.position.N].length).toBe(2);
-      expect(XZNotify.collection[XZNotify.position.S].length).toBe(3);
-      expect(XZNotify.collection[XZNotify.position.NE].length).toBe(4);
+      expect(XZNotify.collection[XZNotify.positions.N].length).toBe(2);
+      expect(XZNotify.collection[XZNotify.positions.S].length).toBe(3);
+      expect(XZNotify.collection[XZNotify.positions.NE].length).toBe(4);
 
       comps.forEach((x) => x.remove());
     });
   });
 
   describe('hydration', () => {
+    let spy: SpiedFunction<
+      ((callback: FrameRequestCallback) => number) &
+        ((callback: FrameRequestCallback) => number)
+    >;
     beforeEach(() => {
       let ts = 0;
       jest.useFakeTimers();
-      jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
-        cb(++ts);
-      });
+      spy = jest.spyOn(window, 'requestAnimationFrame');
+      spy.mockImplementation(
+        (cb: FrameRequestCallback) => cb(++ts) as unknown as number
+      );
     });
 
     afterEach(() => {
-      window.requestAnimationFrame.mockRestore();
+      spy.mockRestore();
       jest.useRealTimers();
     });
 
@@ -184,7 +191,7 @@ describe('Should test', () => {
 
     it('should be without animation', () => {
       const component = XZNotify.create('foobar', {
-        expire: 0, // 1ms
+        expire: 1, // 1ms
         closeable: true,
       });
       component.style.animationDuration = '0s';

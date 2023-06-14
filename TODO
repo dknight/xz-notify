@@ -1,2 +1,2 @@
-* Add delay prop/attr
-* Rewrite build.sh to JS?
+- Add delay prop/attr to delay attribute.
+- Rewrite nash script build.sh to JS/TS?

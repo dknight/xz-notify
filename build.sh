@@ -9,9 +9,11 @@ version=$(node -e "console.log(require('./package.json').version)")
 minified=$(cat $SRC/xz-notify.css | $ESBUILD --minify --loader=css)
 banner="//$BASENAME.min.js,${version},https://github.com/dknight/xz-notify"
 
-cp $SRC/$BASENAME.js $DIST/$BASENAME.js
+$ESBUILD $SRC/$BASENAME.ts --outfile=$DIST/$BASENAME.js
 
-# Substitute
+# cp $SRC/$BASENAME.js $DIST/$BASENAME.js
+
+# Inject version and CSS
 sed -i "s/{{CSS}}/$minified/g" $DIST/$BASENAME.js
 sed -i "s/{{VERSION}}/$version/g" $DIST/$BASENAME.js
 
