@@ -1,6 +1,6 @@
-import {describe, afterEach, beforeEach, it, expect, jest} from '@jest/globals';
-import XZNotify from '../src/xz-notify';
+import {jest} from '@jest/globals';
 import {SpiedFunction} from 'jest-mock';
+import XZNotify from '../src/xz-notify';
 
 describe('Should test', () => {
   let component: XZNotify;

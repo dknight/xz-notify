@@ -30,7 +30,7 @@ module.exports = __toCommonJS(xz_notify_exports);
  *
  * @author Dmitri Smirnov <https://www.whoop.ee/>
  * @license MIT 2023
- * @version 1.1.1
+ * @version 2.0.0
  * @extends HTMLElement
  *
  * @property {number} [expire=10000] Time in milliseconds. How long the

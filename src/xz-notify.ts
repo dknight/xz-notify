@@ -252,9 +252,6 @@ class XZNotify extends HTMLElement implements XZNotifyProps {
     });
   }
 
-  /**
-   * @inheritdoc
-   */
   connectedCallback() {
     this.reflectToProperties();
     XZNotify.collection[this.position].push(this);
