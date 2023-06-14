@@ -8,7 +8,7 @@
  *
  * @author Dmitri Smirnov <https://www.whoop.ee/>
  * @license MIT 2023
- * @version 2.0.0
+ * @version 2.0.1
  * @extends HTMLElement
  *
  * @property {number} [expire=10000] Time in milliseconds. How long the
@@ -140,9 +140,6 @@ const _XZNotify = class extends HTMLElement {
       coll.forEach((x) => this.setPosition.call(x));
     });
   }
-  /**
-   * @inheritdoc
-   */
   connectedCallback() {
     this.reflectToProperties();
     _XZNotify.collection[this.position].push(this);
