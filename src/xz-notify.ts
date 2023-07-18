@@ -165,7 +165,7 @@ class XZNotify extends HTMLElement implements XZNotifyProps {
     this.styleElem.textContent = `:host {
       --xz-notify-background-color: #f7f7f7;
       --xz-notify-heading-color: currentColor;
-      --xz-notify-zIndex: auto;
+      --xz-notify-zIndex: 1000;
     
       display: block;
       position: fixed;
