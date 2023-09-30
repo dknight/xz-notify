@@ -13,7 +13,7 @@ Check out the [demo page](https://www.whoop.ee/xz-notify/demo) for more examples
 [NPM Package](https://www.npmjs.com/package/xz-notify)
 
 ```sh
-npm install --save zx-notify
+npm install --save xz-notify
 ```
 
 Or just download the source and include it in your HTML.
