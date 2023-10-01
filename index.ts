@@ -431,7 +431,7 @@ class XZNotify extends HTMLElement implements XZNotifyProps {
   /**
    * Handler when closeable is true and clicked on the notification.
    */
-  closeHandler(e: MouseEvent | PointerEvent) {
+  closeHandler() {
     this.forcedClose = true;
   }
 
