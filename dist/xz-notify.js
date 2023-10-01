@@ -8,7 +8,7 @@
  *
  * @author Dmitri Smirnov <https://www.whoop.ee/>
  * @license MIT 2023
- * @version 3.0.2
+ * @version 3.0.3
  * @extends HTMLElement
  *
  * @property {number} [expire=10000] Time in milliseconds. How long the
@@ -310,7 +310,7 @@ const _XZNotify = class extends HTMLElement {
   /**
    * Handler when closeable is true and clicked on the notification.
    */
-  closeHandler(e) {
+  closeHandler() {
     this.forcedClose = true;
   }
   disconnectedCallback() {
