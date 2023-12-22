@@ -367,7 +367,7 @@ class XZNotify extends HTMLElement implements XZNotifyProps {
   private render() {
     this.root.append(this.styleElem);
     this.heading && this.root.appendChild(this.buildHeading());
-    this.root.append(...this.childNodes);
+    this.root.append(...(this.childNodes as unknown as ChildNode[]));
     this.setAttribute('role', 'alert');
   }
 

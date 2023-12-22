@@ -1,4 +1,4 @@
-import XZNotify from './src/xz-notify';
+import XZNotify from './index';
 
 declare global {
   namespace JSX {
