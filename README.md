@@ -6,7 +6,7 @@
 
 XZNotify is a framework-agnostic web component to shows floating notifications on the web page.
 
-Check out the [demo page](https://dknight.github.io/xz-notify/demo) for more examples.
+Check out the [demo page](https://dknight.github.io/xz-notify/) for more examples.
 
 ## Install
 
