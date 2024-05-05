@@ -4,9 +4,9 @@
 [![Build](https://github.com/dknight/xz-notify/actions/workflows/node.js.yml/badge.svg)](https://github.com/dknight/xz-notify/actions/workflows/node.js.yml)
 [![Version](https://img.shields.io/npm/v/xz-notify)](https://www.npmjs.com/package/xz-notify)
 
-XZNotify is a framework-agnostic web component to show floating notifications on the web-page.
+XZNotify is a framework-agnostic web component to shows floating notifications on the web page.
 
-Check out the [demo page](https://www.whoop.ee/xz-notify/demo) for more examples.
+Check out the [demo page](https://dknight.github.io/xz-notify/demo) for more examples.
 
 ## Install
 
