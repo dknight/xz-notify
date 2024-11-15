@@ -1,0 +1,21 @@
+/* Simple and clean theme for xz-notify */
+xz-notify {
+  color: #fff;
+  padding: 1em;
+  border-radius: 0;
+  border-width: 0;
+  background: #9c9c9c;
+  --xz-notify-heading-color: currentColor;
+}
+xz-notify[type="info"] {
+  background: #5f9eb7;
+}
+xz-notify[type="success"] {
+  background: #2ecc40;
+}
+xz-notify[type="warning"] {
+  background: #ff851b;
+}
+xz-notify[type="error"] {
+  background: #ff4136;
+}

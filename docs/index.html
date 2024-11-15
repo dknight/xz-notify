@@ -43,12 +43,9 @@
     </style>
 
     <!-- themes -->
-    <link id="theme-bootstrap" rel="stylesheet" href="https://github.com/dknight/xz-notify/tree/main/dist/bootstrap.css"
-      disabled>
-    <link id="theme-simple" rel="stylesheet"
-      href="https://github.com/dknight/xz-notify/tree/main/dist/themes/simple.css" disabled>
-    <link id="theme-bar" rel="stylesheet" href="https://github.com/dknight/xz-notify/tree/main/dist/themes/bar.css"
-      disabled>
+    <link id="theme-bootstrap" rel="stylesheet" href="themes/bootstrap.css" disabled>
+    <link id="theme-simple" rel="stylesheet" href="themes/simple.css" disabled>
+    <link id="theme-bar" rel="stylesheet" href="themes/bar.css" disabled>
   </head>
   <body>
     <header>
@@ -158,7 +155,7 @@
       </p>
     </footer>
     <script type="module">
-      import XZNotify from 'https://github.com/dknight/xz-notify/tree/main/dist/xz-notify.js';
+      import XZNotify from './xz-notify.js';
 
       const form = document.getElementById('add-notification-form');
       form.addEventListener('submit', (e) => {

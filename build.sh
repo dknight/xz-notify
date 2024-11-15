@@ -4,6 +4,7 @@ NPX=$(which npx)
 ESBUILD="$NPX esbuild"
 SRC=./src
 DIST=./dist
+DOCS=./docs
 BASENAME=xz-notify
 version=$(node -e "console.log(require('./package.json').version)")
 banner="//$BASENAME.min.js,${version},https://github.com/dknight/xz-notify"
@@ -24,3 +25,7 @@ cp $DIST/$BASENAME.js $DIST/$BASENAME.mjs
 
 # Copy themes
 cp -r $SRC/themes $DIST
+
+# Docs
+cp $DIST/$BASENAME.js $DOCS
+cp -r $DIST/themes $DOCS

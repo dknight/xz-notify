@@ -8,7 +8,7 @@
  *
  * @author Dmitri Smirnov <https://www.whoop.ee/>
  * @license MIT 2023
- * @version 3.0.5
+ * @version 3.0.7
  * @extends HTMLElement
  *
  * @property {number} [expire=10000] Time in milliseconds. How long the
