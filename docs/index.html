@@ -17,6 +17,7 @@
         stroke: currentColor;
         fill: currentColor;
       }
+
       form {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -24,16 +25,30 @@
         gap: 1rem;
       }
 
-      form div:nth-child(1) { grid-area: 1 / 1 / 2 / 3; }
-      form div:nth-child(2) { grid-area: 2 / 1 / 3 / 2; }
-      form div:nth-child(3) { grid-area: 2 / 2 / 3 / 3; }
-      form div:nth-child(4) { grid-area: 3 / 1 / 4 / 3; }
+      form div:nth-child(1) {
+        grid-area: 1 / 1 / 2 / 3;
+      }
+
+      form div:nth-child(2) {
+        grid-area: 2 / 1 / 3 / 2;
+      }
+
+      form div:nth-child(3) {
+        grid-area: 2 / 2 / 3 / 3;
+      }
+
+      form div:nth-child(4) {
+        grid-area: 3 / 1 / 4 / 3;
+      }
     </style>
 
     <!-- themes -->
-    <link id="theme-bootstrap" rel="stylesheet" href="../dist/themes/bootstrap.css" disabled>
-    <link id="theme-simple" rel="stylesheet" href="../dist/themes/simple.css" disabled>
-    <link id="theme-bar" rel="stylesheet" href="../dist/themes/bar.css" disabled>
+    <link id="theme-bootstrap" rel="stylesheet" href="https://github.com/dknight/xz-notify/tree/main/dist/bootstrap.css"
+      disabled>
+    <link id="theme-simple" rel="stylesheet"
+      href="https://github.com/dknight/xz-notify/tree/main/dist/themes/simple.css" disabled>
+    <link id="theme-bar" rel="stylesheet" href="https://github.com/dknight/xz-notify/tree/main/dist/themes/bar.css"
+      disabled>
   </head>
   <body>
     <header>
@@ -143,7 +158,7 @@
       </p>
     </footer>
     <script type="module">
-      import XZNotify from '../dist/xz-notify.js';
+      import XZNotify from 'https://github.com/dknight/xz-notify/tree/main/dist/xz-notify.js';
 
       const form = document.getElementById('add-notification-form');
       form.addEventListener('submit', (e) => {
